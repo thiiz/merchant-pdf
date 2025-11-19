@@ -35,9 +35,12 @@ const Checkbox = ({ className, ...props }: any) => (
   <input type="checkbox" className={cn("h-4 w-4 rounded border-gray-300 text-black focus:ring-black", className)} {...props} />
 );
 
+
+import { CSVImport } from './CSVImport';
+
 export const ConfigurationPanel = () => {
   const store = useCatalogStore();
-  const [activeTab, setActiveTab] = useState<'content' | 'settings'>('content');
+  const [activeTab, setActiveTab] = useState<'content' | 'settings' | 'import'>('content');
 
   return (
     <div className="flex flex-col h-full bg-white border-r border-gray-200 w-full max-w-md overflow-hidden">
@@ -56,6 +59,12 @@ export const ConfigurationPanel = () => {
             className={cn("px-3 py-1 text-xs font-medium rounded-md transition-all", activeTab === 'settings' ? "bg-white shadow text-black" : "text-gray-500 hover:text-gray-900")}
           >
             Ajustes
+          </button>
+          <button
+            onClick={() => setActiveTab('import')}
+            className={cn("px-3 py-1 text-xs font-medium rounded-md transition-all", activeTab === 'import' ? "bg-white shadow text-black" : "text-gray-500 hover:text-gray-900")}
+          >
+            Importar
           </button>
         </div>
       </div>
@@ -344,6 +353,10 @@ export const ConfigurationPanel = () => {
               </Button>
             </div>
           </div>
+        )}
+
+        {activeTab === 'import' && (
+          <CSVImport />
         )}
       </div>
     </div>

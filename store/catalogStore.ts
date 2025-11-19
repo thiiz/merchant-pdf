@@ -4,7 +4,7 @@ import { create } from 'zustand';
 interface CatalogStore extends CatalogState {
   // Actions
   setGlobalSettings: (settings: Partial<GlobalSettings>) => void;
-  addPage: () => void;
+  addPage: (pageId?: string) => void;
   removePage: (pageId: string) => void;
   addSection: (pageId: string, section: Section) => void;
   updateSection: (pageId: string, sectionId: string, updates: Partial<Section>) => void;
@@ -67,12 +67,12 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
       globalSettings: { ...state.globalSettings, ...settings },
     })),
 
-  addPage: () =>
+  addPage: (pageId) =>
     set((state) => ({
       pages: [
         ...state.pages,
         {
-          id: `page-${Date.now()}`,
+          id: pageId || `page-${Date.now()}`,
           sections: [],
         },
       ],
