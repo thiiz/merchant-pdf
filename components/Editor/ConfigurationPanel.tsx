@@ -4,6 +4,8 @@ import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { Image as ImageIcon, Layout, Plus, Trash2, Type } from 'lucide-react';
 import { useState } from 'react';
+import { Button as UiButton } from '../ui/Button'; // Using the shared Button component for the Modal footer
+import { Modal } from '../ui/Modal';
 import { DataPanel } from './DataPanel';
 
 // Simple UI Components
@@ -39,6 +41,14 @@ const Checkbox = ({ className, ...props }: any) => (
 export const ConfigurationPanel = () => {
   const store = useCatalogStore();
   const [activeTab, setActiveTab] = useState<'content' | 'settings' | 'data'>('content');
+  const [productToDelete, setProductToDelete] = useState<{ pageId: string, sectionId: string, productId: string, productName: string } | null>(null);
+
+  const confirmProductDelete = () => {
+    if (productToDelete) {
+      store.removeProduct(productToDelete.pageId, productToDelete.sectionId, productToDelete.productId);
+      setProductToDelete(null);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full bg-white border-r border-gray-200 w-full max-w-md overflow-hidden">
@@ -187,7 +197,12 @@ export const ConfigurationPanel = () => {
                                           variant="ghost"
                                           size="sm"
                                           className="h-7 px-2 text-red-500 hover:text-red-600 hover:bg-red-50"
-                                          onClick={() => store.removeProduct(page.id, section.id, product.id)}
+                                          onClick={() => setProductToDelete({
+                                            pageId: page.id,
+                                            sectionId: section.id,
+                                            productId: product.id,
+                                            productName: product.name
+                                          })}
                                         >
                                           <Trash2 className="w-3 h-3 mr-1" /> Remover
                                         </Button>
@@ -402,6 +417,23 @@ export const ConfigurationPanel = () => {
           <DataPanel />
         )}
       </div>
+      <Modal
+        isOpen={!!productToDelete}
+        onClose={() => setProductToDelete(null)}
+        title="Remover Produto"
+        footer={
+          <>
+            <UiButton variant="outline" onClick={() => setProductToDelete(null)}>
+              Cancelar
+            </UiButton>
+            <UiButton variant="destructive" onClick={confirmProductDelete}>
+              Remover
+            </UiButton>
+          </>
+        }
+      >
+        <p>Deseja realmente remover o produto <strong>{productToDelete?.productName}</strong>?</p>
+      </Modal>
     </div>
   );
 };

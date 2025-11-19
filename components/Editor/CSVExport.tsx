@@ -3,6 +3,8 @@
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { Download } from 'lucide-react';
+import { useState } from 'react';
+import { Modal } from '../ui/Modal';
 
 const Button = ({ className, variant = 'primary', size = 'md', ...props }: any) => {
   const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
@@ -23,6 +25,7 @@ const Button = ({ className, variant = 'primary', size = 'md', ...props }: any) 
 
 export const CSVExport = () => {
   const store = useCatalogStore();
+  const [showEmptyAlert, setShowEmptyAlert] = useState(false);
 
   const handleExport = () => {
     // Coletar todos os produtos de todas as seções e páginas
@@ -36,7 +39,7 @@ export const CSVExport = () => {
     });
 
     if (products.length === 0) {
-      alert("Nenhum produto encontrado para exportar.");
+      setShowEmptyAlert(true);
       return;
     }
 
@@ -100,6 +103,19 @@ export const CSVExport = () => {
           Exportar CSV
         </Button>
       </div>
+
+      <Modal
+        isOpen={showEmptyAlert}
+        onClose={() => setShowEmptyAlert(false)}
+        title="Exportação Vazia"
+        footer={
+          <Button onClick={() => setShowEmptyAlert(false)} variant="primary">
+            Entendi
+          </Button>
+        }
+      >
+        <p>Nenhum produto encontrado para exportar. Adicione produtos ao seu catálogo antes de exportar.</p>
+      </Modal>
     </div>
   );
 };

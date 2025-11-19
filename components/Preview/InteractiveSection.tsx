@@ -7,6 +7,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+import { Button } from '../ui/Button';
+import { Modal } from '../ui/Modal';
 
 interface InteractiveSectionProps {
   section: Section;
@@ -20,6 +22,7 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({
   children
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { removeSection } = useCatalogStore();
 
   const {
@@ -36,10 +39,9 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({
     transition,
   };
 
-  const handleDelete = () => {
-    if (confirm(`Deseja realmente remover esta seção?`)) {
-      removeSection(pageId, section.id);
-    }
+  const confirmDelete = () => {
+    removeSection(pageId, section.id);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -69,7 +71,7 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({
           <GripVertical className="w-4 h-4 text-gray-500" />
         </button>
         <button
-          onClick={handleDelete}
+          onClick={() => setShowDeleteModal(true)}
           className="p-1.5 hover:bg-red-50 rounded transition-colors group/delete"
           title="Remover seção"
         >
@@ -84,6 +86,25 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({
       )}>
         {children}
       </div>
-    </div>
+
+
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title="Remover Seção"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Remover
+            </Button>
+          </>
+        }
+      >
+        <p>Deseja realmente remover esta seção? Todos os produtos dentro dela também serão removidos.</p>
+      </Modal>
+    </div >
   );
 };

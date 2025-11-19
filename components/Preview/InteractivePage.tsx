@@ -1,3 +1,4 @@
+
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -7,6 +8,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+import { Button } from '../ui/Button';
+import { Modal } from '../ui/Modal';
 import { A4Page } from './A4Page';
 
 interface InteractivePageProps {
@@ -16,6 +19,8 @@ interface InteractivePageProps {
 
 export const InteractivePage: React.FC<InteractivePageProps> = ({ page, index }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const { removePage, pages } = useCatalogStore();
 
   const {
@@ -32,14 +37,17 @@ export const InteractivePage: React.FC<InteractivePageProps> = ({ page, index })
     transition,
   };
 
-  const handleDelete = () => {
+  const handleDeleteClick = () => {
     if (pages.length > 1) {
-      if (confirm(`Deseja realmente remover a Página ${index + 1}?`)) {
-        removePage(page.id);
-      }
+      setShowDeleteModal(true);
     } else {
-      alert('Não é possível remover a última página!');
+      setShowWarningModal(true);
     }
+  };
+
+  const confirmDelete = () => {
+    removePage(page.id);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -79,7 +87,7 @@ export const InteractivePage: React.FC<InteractivePageProps> = ({ page, index })
           {/* Right: Delete Button */}
           {pages.length > 1 && (
             <button
-              onClick={handleDelete}
+              onClick={handleDeleteClick}
               className="p-2 hover:bg-red-50 rounded-md transition-colors group/delete"
               title="Remover página"
             >
@@ -89,8 +97,40 @@ export const InteractivePage: React.FC<InteractivePageProps> = ({ page, index })
         </div>
       </div>
 
-      {/* The Actual A4 Page */}
       <A4Page page={page} />
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title="Remover Página"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Remover
+            </Button>
+          </>
+        }
+      >
+        <p>Deseja realmente remover a <strong>Página {index + 1}</strong>? Esta ação não pode ser desfeita.</p>
+      </Modal>
+
+      {/* Warning Modal */}
+      <Modal
+        isOpen={showWarningModal}
+        onClose={() => setShowWarningModal(false)}
+        title="Ação não permitida"
+        footer={
+          <Button variant="primary" onClick={() => setShowWarningModal(false)}>
+            Entendi
+          </Button>
+        }
+      >
+        <p>Não é possível remover a última página do catálogo.</p>
+      </Modal>
     </div>
   );
 };

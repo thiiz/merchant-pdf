@@ -7,6 +7,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Trash2 } from 'lucide-react';
 import React, { useState } from 'react';
+import { Button } from '../ui/Button';
+import { Modal } from '../ui/Modal';
 import { ProductCard } from './ProductCard';
 
 interface InteractiveProductProps {
@@ -21,6 +23,7 @@ export const InteractiveProduct: React.FC<InteractiveProductProps> = ({
   sectionId
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { removeProduct } = useCatalogStore();
 
   const {
@@ -37,10 +40,9 @@ export const InteractiveProduct: React.FC<InteractiveProductProps> = ({
     transition,
   };
 
-  const handleDelete = () => {
-    if (confirm(`Deseja realmente remover "${product.name}"?`)) {
-      removeProduct(pageId, sectionId, product.id);
-    }
+  const confirmDelete = () => {
+    removeProduct(pageId, sectionId, product.id);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -70,7 +72,7 @@ export const InteractiveProduct: React.FC<InteractiveProductProps> = ({
           <GripVertical className="w-4 h-4 text-gray-500" />
         </button>
         <button
-          onClick={handleDelete}
+          onClick={() => setShowDeleteModal(true)}
           className="p-1.5 hover:bg-red-50 rounded transition-colors group/delete"
           title="Remover produto"
         >
@@ -85,6 +87,25 @@ export const InteractiveProduct: React.FC<InteractiveProductProps> = ({
       )}>
         <ProductCard product={product} />
       </div>
-    </div>
+
+
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title="Remover Produto"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Remover
+            </Button>
+          </>
+        }
+      >
+        <p>Deseja realmente remover o produto <strong>{product.name}</strong>?</p>
+      </Modal>
+    </div >
   );
 };
