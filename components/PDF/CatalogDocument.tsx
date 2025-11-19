@@ -1,3 +1,4 @@
+import { DESIGN_TOKENS } from '@/constants/design-tokens';
 import { CatalogState } from '@/types/catalog';
 import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import React from 'react';
@@ -9,79 +10,84 @@ import React from 'react';
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
-    backgroundColor: '#ffffff',
+    backgroundColor: DESIGN_TOKENS.colors.white,
     padding: 0,
   },
   headerDecoration: {
     width: '100%',
-    height: 16, // matching the preview h-4 (16px)
+    height: DESIGN_TOKENS.components.header.decoration.height.pt,
   },
   contentContainer: {
-    padding: 30,
+    padding: DESIGN_TOKENS.components.page.padding.pt,
     flexGrow: 1,
+    gap: DESIGN_TOKENS.components.header.contentGap.pt,
+    display: 'flex',
+    flexDirection: 'column',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottomWidth: 2,
-    paddingBottom: 10,
-    marginBottom: 20,
+    borderBottomWidth: DESIGN_TOKENS.components.header.borderBottom.pt,
+    paddingBottom: DESIGN_TOKENS.components.header.paddingBottom.pt,
+    marginBottom: DESIGN_TOKENS.components.header.marginBottom.pt,
   },
   logo: {
-    height: 50,
+    height: DESIGN_TOKENS.components.header.logo.height.pt,
     objectFit: 'contain',
   },
   companyInfo: {
-    marginLeft: 10,
+    marginLeft: DESIGN_TOKENS.components.header.logoCompanyGap.pt,
   },
   companyName: {
-    fontSize: 24,
+    fontSize: DESIGN_TOKENS.components.header.companyName.fontSize.pt,
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },
   subTitle: {
-    fontSize: 10,
-    color: '#6b7280',
+    fontSize: DESIGN_TOKENS.components.header.subtitle.fontSize.pt,
+    color: DESIGN_TOKENS.components.header.subtitle.color,
   },
   headerRight: {
     textAlign: 'right',
   },
   specialOffer: {
-    fontSize: 12,
+    fontSize: DESIGN_TOKENS.components.header.specialOffer.fontSize.pt,
     fontWeight: 'bold',
   },
   date: {
-    fontSize: 10,
-    color: '#6b7280',
+    fontSize: DESIGN_TOKENS.components.header.subtitle.fontSize.pt,
+    color: DESIGN_TOKENS.colors.gray[500],
   },
   section: {
-    marginBottom: 15,
+    marginBottom: DESIGN_TOKENS.components.section.marginBottom.pt,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'black',
+    fontSize: DESIGN_TOKENS.components.section.title.fontSize.pt,
+    fontWeight: 'heavy', // 'black' equivalent in PDF
     textTransform: 'uppercase',
-    borderLeftWidth: 6, // matching preview border-l-8 (8px ≈ 6pt)
-    paddingLeft: 10,
-    marginBottom: 10,
+    borderLeftWidth: DESIGN_TOKENS.components.section.title.borderLeft.pt,
+    paddingLeft: DESIGN_TOKENS.components.section.title.paddingLeft.pt,
+    marginBottom: DESIGN_TOKENS.components.section.title.marginBottom.pt,
   },
-  grid2: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  grid3: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  grid4: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: DESIGN_TOKENS.components.grid.gap.pt
+  },
 
   productCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderBottomWidth: 4,
+    backgroundColor: DESIGN_TOKENS.colors.white,
+    borderRadius: DESIGN_TOKENS.components.productCard.borderRadius.pt,
+    borderWidth: DESIGN_TOKENS.components.productCard.border.pt,
+    borderColor: DESIGN_TOKENS.colors.gray[200],
+    borderBottomWidth: DESIGN_TOKENS.components.productCard.borderBottom.pt,
     overflow: 'hidden',
     marginBottom: 10,
   },
   productImageContainer: {
-    height: 150,
-    backgroundColor: '#f3f4f6',
+    height: DESIGN_TOKENS.components.productCard.image.height.pt,
+    backgroundColor: DESIGN_TOKENS.colors.gray[100],
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -92,78 +98,85 @@ const styles = StyleSheet.create({
     objectFit: 'cover',
   },
   noImageText: {
-    fontSize: 10,
-    color: '#9ca3af',
+    fontSize: DESIGN_TOKENS.components.productCard.spec.fontSize.pt,
+    color: DESIGN_TOKENS.colors.gray[400],
   },
   soldOutBadge: {
     position: 'absolute',
-    top: 5,
-    right: 5,
-    backgroundColor: '#000000',
-    color: '#ffffff',
-    fontSize: 8,
-    padding: '2 4',
+    top: DESIGN_TOKENS.components.productCard.soldOutBadge.top.pt,
+    right: DESIGN_TOKENS.components.productCard.soldOutBadge.right.pt,
+    backgroundColor: DESIGN_TOKENS.colors.black,
+    color: DESIGN_TOKENS.colors.white,
+    fontSize: DESIGN_TOKENS.components.productCard.soldOutBadge.fontSize.pt,
+    fontWeight: 'bold',
+    paddingTop: DESIGN_TOKENS.components.productCard.soldOutBadge.paddingY.pt,
+    paddingBottom: DESIGN_TOKENS.components.productCard.soldOutBadge.paddingY.pt,
+    paddingLeft: DESIGN_TOKENS.components.productCard.soldOutBadge.paddingX.pt,
+    paddingRight: DESIGN_TOKENS.components.productCard.soldOutBadge.paddingX.pt,
   },
   productContent: {
-    padding: 8,
+    padding: DESIGN_TOKENS.components.productCard.padding.pt,
     flexGrow: 1,
     justifyContent: 'space-between',
   },
   productName: {
-    fontSize: 12,
+    fontSize: DESIGN_TOKENS.components.productCard.name.fontSize.pt,
     fontWeight: 'bold',
-    marginBottom: 4,
-    height: 28, // Fixed height for 2 lines
+    marginBottom: DESIGN_TOKENS.components.productCard.name.marginBottom.pt,
+    height: DESIGN_TOKENS.components.productCard.name.lineHeight.pt, // Fixed height for 2 lines
     overflow: 'hidden',
   },
   specsList: {
-    marginBottom: 6,
+    marginBottom: DESIGN_TOKENS.components.productCard.price.marginTop.pt,
   },
   specItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 2,
+    marginBottom: DESIGN_TOKENS.components.productCard.spec.marginBottom.pt,
   },
   specDot: {
-    width: 3,
-    height: 3,
-    borderRadius: 1.5,
-    backgroundColor: '#9ca3af',
-    marginRight: 4,
+    width: DESIGN_TOKENS.components.productCard.spec.dot.size.pt,
+    height: DESIGN_TOKENS.components.productCard.spec.dot.size.pt,
+    borderRadius: DESIGN_TOKENS.components.productCard.spec.dot.size.pt / 2,
+    backgroundColor: DESIGN_TOKENS.colors.gray[400],
+    marginRight: DESIGN_TOKENS.components.productCard.spec.dot.marginRight.pt,
   },
   specText: {
-    fontSize: 8,
-    color: '#4b5563',
+    fontSize: DESIGN_TOKENS.components.productCard.spec.fontSize.pt,
+    color: DESIGN_TOKENS.colors.gray[600],
   },
   priceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#f3f4f6',
-    paddingTop: 4,
-    marginTop: 4,
+    borderTopWidth: DESIGN_TOKENS.components.productCard.price.borderTop.pt,
+    borderTopColor: DESIGN_TOKENS.colors.gray[100],
+    paddingTop: DESIGN_TOKENS.components.productCard.price.paddingTop.pt,
+    marginTop: DESIGN_TOKENS.components.productCard.price.marginTop.pt,
   },
   priceLabel: {
-    fontSize: 8,
-    color: '#6b7280',
+    fontSize: DESIGN_TOKENS.components.productCard.price.label.fontSize.pt,
+    color: DESIGN_TOKENS.colors.gray[500],
   },
   priceValue: {
-    fontSize: 14,
+    fontSize: DESIGN_TOKENS.components.productCard.price.value.fontSize.pt,
     fontWeight: 'bold',
   },
   footer: {
     marginTop: 'auto',
-    padding: '10 30',
-    backgroundColor: '#f3f4f6',
-    borderTopWidth: 4,
+    paddingTop: DESIGN_TOKENS.components.footer.padding.pt,
+    paddingBottom: DESIGN_TOKENS.components.footer.padding.pt,
+    paddingLeft: DESIGN_TOKENS.components.footer.paddingX.pt,
+    paddingRight: DESIGN_TOKENS.components.footer.paddingX.pt,
+    backgroundColor: DESIGN_TOKENS.colors.gray[100],
+    borderTopWidth: DESIGN_TOKENS.components.footer.borderTop.pt,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 8,
-    color: '#4b5563',
+    fontSize: DESIGN_TOKENS.components.footer.fontSize.pt,
+    color: DESIGN_TOKENS.colors.gray[600],
   },
 });
 
@@ -210,14 +223,15 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                 )}
 
                 {section.type === 'product-grid' && (
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+                  <View style={styles.grid}>
                     {section.products?.map((product) => {
                       // Calculate width based on columns (approximate for A4 width minus padding)
-                      // A4 width ~595pt. Padding 60pt total. Content ~535pt.
+                      // A4 width ~595pt. Padding 48pt total (24pt * 2). Content ~547pt.
                       // Gaps need to be accounted for.
                       const cols = section.columns || 3;
-                      const gapTotal = (cols - 1) * 10;
-                      const width = (535 - gapTotal) / cols;
+                      const gapTotal = (cols - 1) * DESIGN_TOKENS.components.grid.gap.pt;
+                      const availableWidth = 595 - (DESIGN_TOKENS.components.page.padding.pt * 2);
+                      const width = (availableWidth - gapTotal) / cols;
 
                       return (
                         <View key={product.id} style={[styles.productCard, { width, borderBottomColor: primaryColor }]}>
