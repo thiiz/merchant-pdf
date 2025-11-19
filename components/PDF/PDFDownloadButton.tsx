@@ -9,10 +9,22 @@ import { CatalogDocument } from './CatalogDocument';
 export const PDFDownloadButton = () => {
   const state = useCatalogStore();
   const [isClient, setIsClient] = useState(false);
+  const [debouncedState, setDebouncedState] = useState(state);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // Debounce state updates to avoid excessive PDF regeneration and fix crash on removal
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedState(state);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [state]);
 
   if (!isClient) {
     return (
@@ -25,8 +37,9 @@ export const PDFDownloadButton = () => {
 
   return (
     <PDFDownloadLink
-      document={<CatalogDocument state={state} />}
-      fileName={`catalogo-${state.globalSettings.companyName.replace(/\s+/g, '-').toLowerCase()}.pdf`}
+      key={JSON.stringify(debouncedState)}
+      document={<CatalogDocument state={debouncedState} />}
+      fileName={`catalogo-${debouncedState.globalSettings.companyName.replace(/\s+/g, '-').toLowerCase()}.pdf`}
       className="flex items-center gap-2 bg-black text-white px-6 py-2 rounded-full font-medium hover:bg-gray-800 transition-all shadow-md hover:shadow-lg active:scale-95"
     >
       {({ blob, url, loading, error }) =>

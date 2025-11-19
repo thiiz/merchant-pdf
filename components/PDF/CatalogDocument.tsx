@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   },
   headerDecoration: {
     width: '100%',
-    height: 20, // approx 4mm
+    height: 16, // matching the preview h-4 (16px)
   },
   contentContainer: {
     padding: 30,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'black',
     textTransform: 'uppercase',
-    borderLeftWidth: 8,
+    borderLeftWidth: 6, // matching preview border-l-8 (8px ≈ 6pt)
     paddingLeft: 10,
     marginBottom: 10,
   },
