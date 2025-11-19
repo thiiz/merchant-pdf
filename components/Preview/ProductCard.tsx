@@ -29,7 +29,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         }}
       >
         {product.image ? (
-          <img src={product.image} alt={product.name} className="object-cover w-full h-full" />
+          <img src={product.image} alt={product.name} className="object-contain w-full h-full" />
         ) : (
           <div
             className="text-gray-400"
@@ -101,25 +101,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         <div
-          className="flex items-center justify-between"
+          className="flex flex-col"
           style={{
             borderTop: `${DESIGN_TOKENS.components.productCard.price.borderTop.px}px solid ${DESIGN_TOKENS.colors.gray[100]}`,
             paddingTop: `${DESIGN_TOKENS.components.productCard.price.paddingTop.px}px`,
             marginTop: `${DESIGN_TOKENS.components.productCard.price.marginTop.px}px`
           }}
         >
-          <span
-            className="text-gray-500"
-            style={{ fontSize: `${DESIGN_TOKENS.components.productCard.price.label.fontSize.px}px` }}
-          >
-            À vista
-          </span>
-          <span
-            className="font-bold text-gray-900"
-            style={{ fontSize: `${DESIGN_TOKENS.components.productCard.price.value.fontSize.px}px` }}
-          >
-            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
-          </span>
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-gray-400 text-[10px] font-medium">
+              PCS/CX: {product.piecesPerBox || 1}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span
+              className="text-gray-500"
+              style={{ fontSize: `${DESIGN_TOKENS.components.productCard.price.label.fontSize.px}px` }}
+            >
+              Unidade
+            </span>
+            <span
+              className="font-bold text-gray-900"
+              style={{ fontSize: `${DESIGN_TOKENS.components.productCard.price.value.fontSize.px}px` }}
+            >
+              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price / (product.piecesPerBox || 1))}
+            </span>
+          </div>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ export interface Product {
   price: number;
   specs: string[];
   soldOut: boolean;
+  piecesPerBox: number;
   image?: string;
 }
 

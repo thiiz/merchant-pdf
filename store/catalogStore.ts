@@ -46,6 +46,7 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
               price: 99.90,
               specs: ['Spec 1', 'Spec 2'],
               soldOut: false,
+              piecesPerBox: 10,
             },
             {
               id: 'prod-2',
@@ -53,6 +54,7 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
               price: 149.90,
               specs: ['Spec A', 'Spec B'],
               soldOut: true,
+              piecesPerBox: 5,
             },
           ],
         },

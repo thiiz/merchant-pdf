@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
-import { AlertCircle, Layout, MoveDown, MoveUp, Plus, Trash2, Type } from 'lucide-react';
+import { AlertCircle, Image as ImageIcon, Layout, MoveDown, MoveUp, Plus, Trash2, Type } from 'lucide-react';
 import { useState } from 'react';
 
 // Simple UI Components (since we don't have full shadcn setup yet, implementing basics)
@@ -221,7 +221,42 @@ export const ConfigurationPanel = () => {
                             <Label>Produtos ({section.products?.length || 0})</Label>
                             <div className="grid gap-2">
                               {section.products?.map((product) => (
-                                <div key={product.id} className="flex items-center gap-2 bg-gray-50 p-2 rounded border border-gray-100">
+                                <div key={product.id} className="flex items-start gap-2 bg-gray-50 p-2 rounded border border-gray-100">
+                                  {/* Image Control */}
+                                  <div className="flex flex-col gap-1 items-center">
+                                    <div className="relative w-10 h-10 bg-gray-200 rounded border border-gray-300 overflow-hidden flex items-center justify-center group cursor-pointer hover:border-gray-400 transition-colors">
+                                      {product.image ? (
+                                        <img src={product.image} className="w-full h-full object-cover" alt="Product" />
+                                      ) : (
+                                        <ImageIcon className="w-4 h-4 text-gray-400" />
+                                      )}
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                        onChange={(e) => {
+                                          const file = e.target.files?.[0];
+                                          if (file) {
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => {
+                                              store.updateProduct(page.id, section.id, product.id, { image: reader.result as string });
+                                            };
+                                            reader.readAsDataURL(file);
+                                          }
+                                        }}
+                                      />
+                                    </div>
+                                    <button
+                                      className="text-[10px] text-blue-600 hover:underline flex items-center gap-0.5"
+                                      onClick={() => {
+                                        const url = window.prompt("URL da imagem:", product.image || '');
+                                        if (url !== null) store.updateProduct(page.id, section.id, product.id, { image: url });
+                                      }}
+                                    >
+                                      Link
+                                    </button>
+                                  </div>
+
                                   <div className="flex-1 grid gap-1">
                                     <Input
                                       className="h-7 text-xs bg-white"
@@ -236,6 +271,13 @@ export const ConfigurationPanel = () => {
                                         type="number"
                                         value={product.price}
                                         onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { price: Number(e.target.value) })}
+                                      />
+                                      <Input
+                                        className="h-7 text-xs bg-white w-16"
+                                        placeholder="Pcs/Cx"
+                                        type="number"
+                                        value={product.piecesPerBox || 1}
+                                        onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { piecesPerBox: Number(e.target.value) })}
                                       />
                                       <Input
                                         className="h-7 text-xs bg-white flex-1"
@@ -271,7 +313,8 @@ export const ConfigurationPanel = () => {
                                   name: 'Novo Produto',
                                   price: 0,
                                   specs: [],
-                                  soldOut: false
+                                  soldOut: false,
+                                  piecesPerBox: 1
                                 })}
                               >
                                 <Plus className="w-3 h-3 mr-1" /> Adicionar Produto

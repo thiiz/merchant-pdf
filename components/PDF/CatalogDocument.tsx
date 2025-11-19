@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   productImage: {
     width: '100%',
     height: '100%',
-    objectFit: 'cover',
+    objectFit: 'contain',
   },
   noImageText: {
     fontSize: DESIGN_TOKENS.components.productCard.spec.fontSize.pt,
@@ -275,11 +275,16 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                               </View>
                             </View>
 
-                            <View style={styles.priceContainer}>
-                              <Text style={styles.priceLabel}>À vista</Text>
-                              <Text style={styles.priceValue}>
-                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price)}
-                              </Text>
+                            <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch' }]}>
+                              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                                <Text style={[styles.specText, { fontSize: 8 }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
+                              </View>
+                              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text style={styles.priceLabel}>Unidade</Text>
+                                <Text style={styles.priceValue}>
+                                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price / (product.piecesPerBox || 1))}
+                                </Text>
+                              </View>
                             </View>
                           </View>
                         </View>
