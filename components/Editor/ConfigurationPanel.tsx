@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
-import { Image as ImageIcon, Layout, MoveDown, MoveUp, Plus, Trash2, Type } from 'lucide-react';
+import { Image as ImageIcon, Layout, Plus, Trash2, Type } from 'lucide-react';
 import { useState } from 'react';
 import { DataPanel } from './DataPanel';
 
@@ -79,45 +79,12 @@ export const ConfigurationPanel = () => {
                     <h3 className="font-medium text-sm text-gray-500 uppercase tracking-wider">
                       Página {pageIndex + 1}
                     </h3>
-                    {store.pages.length > 1 && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => store.removePage(page.id)}
-                        className="text-red-500 hover:text-red-600 hover:bg-red-50 h-7"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    )}
                   </div>
 
                   {/* Sections */}
                   <div className="space-y-6">
                     {page.sections.map((section, sectionIndex) => (
-                      <div key={section.id} className="group relative border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
-                        {/* Section Controls */}
-                        <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 bg-white shadow-sm rounded-md border border-gray-100 p-0.5">
-                          <button
-                            onClick={() => store.reorderSection(page.id, section.id, 'up')}
-                            disabled={sectionIndex === 0}
-                            className="p-1 hover:bg-gray-100 rounded disabled:opacity-30"
-                          >
-                            <MoveUp className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={() => store.reorderSection(page.id, section.id, 'down')}
-                            disabled={sectionIndex === page.sections.length - 1}
-                            className="p-1 hover:bg-gray-100 rounded disabled:opacity-30"
-                          >
-                            <MoveDown className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={() => store.removeSection(page.id, section.id)}
-                            className="p-1 hover:bg-red-50 text-red-500 rounded"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
+                      <div key={section.id} className="relative border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
 
                         {/* Header Section Editor */}
                         {section.type === 'header' && (

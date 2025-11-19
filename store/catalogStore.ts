@@ -6,6 +6,7 @@ interface CatalogStore extends CatalogState {
   setGlobalSettings: (settings: Partial<GlobalSettings>) => void;
   addPage: (pageId?: string) => void;
   removePage: (pageId: string) => void;
+  reorderPages: (oldIndex: number, newIndex: number) => void;
   addSection: (pageId: string, section: Section) => void;
   updateSection: (pageId: string, sectionId: string, updates: Partial<Section>) => void;
   removeSection: (pageId: string, sectionId: string) => void;
@@ -13,6 +14,8 @@ interface CatalogStore extends CatalogState {
   updateProduct: (pageId: string, sectionId: string, productId: string, updates: Partial<Product>) => void;
   removeProduct: (pageId: string, sectionId: string, productId: string) => void;
   reorderSection: (pageId: string, sectionId: string, direction: 'up' | 'down') => void;
+  reorderProducts: (pageId: string, sectionId: string, oldIndex: number, newIndex: number) => void;
+  moveProduct: (sourcePageId: string, sourceSectionId: string, targetPageId: string, targetSectionId: string, productId: string, newIndex: number) => void;
 }
 
 export const useCatalogStore = create<CatalogStore>((set) => ({
@@ -196,6 +199,77 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
 
       const newPages = [...state.pages];
       newPages[pageIndex] = { ...page, sections: newSections };
+
+      return { pages: newPages };
+    }),
+
+  reorderPages: (oldIndex, newIndex) =>
+    set((state) => {
+      const newPages = [...state.pages];
+      const [movedPage] = newPages.splice(oldIndex, 1);
+      newPages.splice(newIndex, 0, movedPage);
+      return { pages: newPages };
+    }),
+
+  reorderProducts: (pageId, sectionId, oldIndex, newIndex) =>
+    set((state) => {
+      const pageIndex = state.pages.findIndex((p) => p.id === pageId);
+      if (pageIndex === -1) return state;
+
+      const page = state.pages[pageIndex];
+      const sectionIndex = page.sections.findIndex((s) => s.id === sectionId);
+      if (sectionIndex === -1) return state;
+
+      const section = page.sections[sectionIndex];
+      if (!section.products) return state;
+
+      const newProducts = [...section.products];
+      const [movedProduct] = newProducts.splice(oldIndex, 1);
+      newProducts.splice(newIndex, 0, movedProduct);
+
+      const newSections = [...page.sections];
+      newSections[sectionIndex] = { ...section, products: newProducts };
+
+      const newPages = [...state.pages];
+      newPages[pageIndex] = { ...page, sections: newSections };
+
+      return { pages: newPages };
+    }),
+
+  moveProduct: (sourcePageId, sourceSectionId, targetPageId, targetSectionId, productId, newIndex) =>
+    set((state) => {
+      // Deep clone pages to avoid mutation issues
+      const newPages = JSON.parse(JSON.stringify(state.pages));
+
+      // Find source
+      const sourcePageIndex = newPages.findIndex((p: any) => p.id === sourcePageId);
+      if (sourcePageIndex === -1) return state;
+      const sourceSectionIndex = newPages[sourcePageIndex].sections.findIndex((s: any) => s.id === sourceSectionId);
+      if (sourceSectionIndex === -1) return state;
+
+      // Find target
+      const targetPageIndex = newPages.findIndex((p: any) => p.id === targetPageId);
+      if (targetPageIndex === -1) return state;
+      const targetSectionIndex = newPages[targetPageIndex].sections.findIndex((s: any) => s.id === targetSectionId);
+      if (targetSectionIndex === -1) return state;
+
+      // Get product
+      const sourceProducts = newPages[sourcePageIndex].sections[sourceSectionIndex].products || [];
+      const productIndex = sourceProducts.findIndex((p: any) => p.id === productId);
+      if (productIndex === -1) return state;
+
+      const [movedProduct] = sourceProducts.splice(productIndex, 1);
+
+      // Add to target
+      if (!newPages[targetPageIndex].sections[targetSectionIndex].products) {
+        newPages[targetPageIndex].sections[targetSectionIndex].products = [];
+      }
+
+      const targetProducts = newPages[targetPageIndex].sections[targetSectionIndex].products;
+
+      // Ensure index is within bounds
+      const safeIndex = Math.min(Math.max(0, newIndex), targetProducts.length);
+      targetProducts.splice(safeIndex, 0, movedProduct);
 
       return { pages: newPages };
     }),
