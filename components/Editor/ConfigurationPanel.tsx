@@ -31,6 +31,10 @@ const Label = ({ className, ...props }: any) => (
   <label className={cn("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", className)} {...props} />
 );
 
+const Checkbox = ({ className, ...props }: any) => (
+  <input type="checkbox" className={cn("h-4 w-4 rounded border-gray-300 text-black focus:ring-black", className)} {...props} />
+);
+
 export const ConfigurationPanel = () => {
   const store = useCatalogStore();
   const [activeTab, setActiveTab] = useState<'content' | 'settings'>('content');
@@ -62,15 +66,59 @@ export const ConfigurationPanel = () => {
         {activeTab === 'settings' && (
           <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300">
             <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Cabeçalho</h3>
+
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  checked={store.globalSettings.showHeader}
+                  onChange={(e: any) => store.setGlobalSettings({ showHeader: e.target.checked })}
+                  id="show-header"
+                />
+                <Label htmlFor="show-header">Mostrar Cabeçalho</Label>
+              </div>
+
+              {store.globalSettings.showHeader && (
+                <div className="space-y-4 pl-4 border-l-2 border-gray-100 ml-1">
+                  <div className="grid gap-2">
+                    <Label>Título Principal</Label>
+                    <Input
+                      value={store.globalSettings.companyName}
+                      onChange={(e: any) => store.setGlobalSettings({ companyName: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label>Subtítulo 1</Label>
+                    <Input
+                      value={store.globalSettings.headerTitle}
+                      onChange={(e: any) => store.setGlobalSettings({ headerTitle: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label>Subtítulo 2</Label>
+                    <Input
+                      value={store.globalSettings.headerSubtitle}
+                      onChange={(e: any) => store.setGlobalSettings({ headerSubtitle: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      checked={store.globalSettings.showDate}
+                      onChange={(e: any) => store.setGlobalSettings({ showDate: e.target.checked })}
+                      id="show-date"
+                    />
+                    <Label htmlFor="show-date">Mostrar Data</Label>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4">
               <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Identidade Visual</h3>
 
-              <div className="grid gap-2">
-                <Label>Nome da Empresa</Label>
-                <Input
-                  value={store.globalSettings.companyName}
-                  onChange={(e: any) => store.setGlobalSettings({ companyName: e.target.value })}
-                />
-              </div>
+
 
               <div className="grid gap-2">
                 <Label>Cor Primária</Label>

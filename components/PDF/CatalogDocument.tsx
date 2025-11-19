@@ -186,32 +186,39 @@ interface CatalogDocumentProps {
 
 export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
   const { globalSettings, pages } = state;
-  const { primaryColor, logoUrl, companyName, footerText } = globalSettings;
+  const { primaryColor, logoUrl, companyName, footerText, showHeader, headerTitle, headerSubtitle, showDate } = globalSettings;
+  const currentDate = new Date().toLocaleDateString('pt-BR');
 
   return (
     <Document>
       {pages.map((page, pageIndex) => (
         <Page key={page.id} size="A4" style={styles.page}>
           {/* Header Decoration */}
-          <View style={[styles.headerDecoration, { backgroundColor: primaryColor }]} />
+          {showHeader && (
+            <View style={[styles.headerDecoration, { backgroundColor: primaryColor }]} />
+          )}
 
           <View style={styles.contentContainer}>
             {/* Page Header */}
-            <View style={[styles.header, { borderBottomColor: primaryColor }]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {logoUrl ? (
-                  <Image src={logoUrl} style={styles.logo} />
-                ) : null}
-                <View style={styles.companyInfo}>
-                  <Text style={styles.companyName}>{companyName}</Text>
-                  <Text style={styles.subTitle}>Catálogo de Produtos</Text>
+            {showHeader && (
+              <View style={[styles.header, { borderBottomColor: primaryColor }]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {logoUrl ? (
+                    <Image src={logoUrl} style={styles.logo} />
+                  ) : null}
+                  <View style={styles.companyInfo}>
+                    <Text style={styles.companyName}>{companyName}</Text>
+                    <Text style={styles.subTitle}>{headerTitle}</Text>
+                  </View>
+                </View>
+                <View style={styles.headerRight}>
+                  <Text style={[styles.specialOffer, { color: primaryColor }]}>{headerSubtitle}</Text>
+                  {showDate && (
+                    <Text style={styles.date}>{currentDate}</Text>
+                  )}
                 </View>
               </View>
-              <View style={styles.headerRight}>
-                <Text style={[styles.specialOffer, { color: primaryColor }]}>Ofertas Especiais</Text>
-                <Text style={styles.date}>{new Date().toLocaleDateString('pt-BR')}</Text>
-              </View>
-            </View>
+            )}
 
             {/* Sections */}
             {page.sections.map((section) => (

@@ -21,6 +21,10 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
     logoUrl: '',
     footerText: 'www.exemplo.com.br',
     companyName: 'Minha Loja',
+    showHeader: true,
+    headerTitle: 'Catálogo de Produtos',
+    headerSubtitle: 'Ofertas Especiais',
+    showDate: true,
   },
   pages: [
     {

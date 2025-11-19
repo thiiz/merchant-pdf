@@ -27,6 +27,10 @@ export interface GlobalSettings {
   logoUrl: string;
   footerText: string;
   companyName: string;
+  showHeader: boolean;
+  headerTitle: string;
+  headerSubtitle: string;
+  showDate: boolean;
 }
 
 export interface CatalogState {
