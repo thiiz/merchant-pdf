@@ -1,17 +1,24 @@
 import { DESIGN_TOKENS } from '@/constants/design-tokens';
 import { CatalogState } from '@/types/catalog';
-import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import React from 'react';
 
-// Register fonts (optional, using default Helvetica for now to ensure speed, 
-// but in a real app you'd register a custom font for better styling)
-// Font.register({ family: 'Roboto', src: '...' });
+// Register Inter font from local files
+Font.register({
+  family: 'Inter',
+  fonts: [
+    { src: '/inter/Inter_18pt-Regular.ttf' },
+    { src: '/inter/Inter_18pt-Bold.ttf', fontWeight: 'bold' },
+    { src: '/inter/Inter_18pt-Black.ttf', fontWeight: 'heavy' }
+  ]
+});
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: DESIGN_TOKENS.colors.white,
     padding: 0,
+    fontFamily: 'Inter',
   },
   headerDecoration: {
     width: '100%',
