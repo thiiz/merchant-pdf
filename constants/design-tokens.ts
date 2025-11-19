@@ -84,84 +84,84 @@ export const DESIGN_TOKENS = {
     },
 
     header: {
-      decoration: { height: { px: 16, pt: 16 } },
+      decoration: { height: { px: 12, pt: 10 } }, // Reduced
       borderBottom: { px: 2, pt: 1.5 },
-      paddingBottom: { px: 16, pt: 12 },
-      marginBottom: { px: 20, pt: 15 },
-      logo: { height: { px: 48, pt: 50 } },
+      paddingBottom: { px: 12, pt: 8 }, // Reduced
+      marginBottom: { px: 16, pt: 10 }, // Reduced
+      logo: { height: { px: 40, pt: 40 } }, // Reduced from 50
       companyName: {
-        fontSize: { px: 24, pt: 20 },
+        fontSize: { px: 20, pt: 16 }, // Reduced
         fontWeight: 'bold',
       },
       subtitle: {
-        fontSize: { px: 12, pt: 10 },  // text-xs = 12px
+        fontSize: { px: 12, pt: 9 },
         color: '#6b7280',
       },
       specialOffer: {
-        fontSize: { px: 14, pt: 12 },  // text-sm = 14px
+        fontSize: { px: 12, pt: 10 },
       },
-      contentGap: { px: 24, pt: 18 },  // gap-6 = 24px
-      logoCompanyGap: { px: 16, pt: 12 }, // gap-4 = 16px
+      contentGap: { px: 16, pt: 12 }, // Reduced
+      logoCompanyGap: { px: 12, pt: 10 },
     },
 
     section: {
       title: {
-        fontSize: { px: 20, pt: 18 },
+        fontSize: { px: 18, pt: 14 }, // Reduced
         fontWeight: 'black',
-        borderLeft: { px: 8, pt: 6 },
-        paddingLeft: { px: 12, pt: 10 },
-        marginBottom: { px: 16, pt: 12 },
+        borderLeft: { px: 6, pt: 4 },
+        paddingLeft: { px: 10, pt: 8 },
+        marginBottom: { px: 12, pt: 8 }, // Reduced
       },
-      marginBottom: { px: 24, pt: 18 },
+      marginBottom: { px: 16, pt: 12 }, // Reduced
     },
 
     productCard: {
-      border: { px: 1, pt: 1 },
-      borderBottom: { px: 4, pt: 3 },
-      borderRadius: { px: 8, pt: 6 },
-      padding: { px: 12, pt: 9 },
+      border: { px: 1, pt: 0.5 }, // Thinner border
+      borderBottom: { px: 4, pt: 2 }, // Reduced
+      borderRadius: { px: 6, pt: 4 },
+      padding: { px: 8, pt: 6 }, // Reduced padding
       image: {
-        height: { px: 150, pt: 150 },
+        height: { px: 120, pt: 110 }, // Reduced significantly from 150
       },
       name: {
-        fontSize: { px: 14, pt: 12 },
+        fontSize: { px: 12, pt: 10 }, // Reduced
         fontWeight: 'bold',
-        marginBottom: { px: 4, pt: 3 },
-        lineHeight: { px: 28, pt: 28 }, // Fixed height for 2 lines
+        marginBottom: { px: 4, pt: 2 },
+        lineHeight: { px: 24, pt: 20 }, // Reduced height for 2 lines
       },
       spec: {
-        fontSize: { px: 10, pt: 8 },
+        fontSize: { px: 9, pt: 7 }, // Reduced
         dot: {
-          size: { px: 4, pt: 3 },
-          marginRight: { px: 6, pt: 4 },
+          size: { px: 3, pt: 2 },
+          marginRight: { px: 4, pt: 3 },
         },
-        marginBottom: { px: 2, pt: 1.5 },
+        marginBottom: { px: 2, pt: 1 },
       },
       price: {
-        label: { fontSize: { px: 10, pt: 8 } },
-        value: { fontSize: { px: 18, pt: 14 } },
-        borderTop: { px: 1, pt: 1 },
-        paddingTop: { px: 8, pt: 4 },
-        marginTop: { px: 8, pt: 4 },
+        label: { fontSize: { px: 9, pt: 7 } },
+        value: { fontSize: { px: 16, pt: 12 } }, // Reduced
+        borderTop: { px: 1, pt: 0.5 },
+        paddingTop: { px: 6, pt: 3 },
+        marginTop: { px: 6, pt: 3 },
       },
       soldOutBadge: {
-        fontSize: { px: 10, pt: 8 },
-        paddingY: { px: 4, pt: 3 },
-        paddingX: { px: 8, pt: 6 },
-        top: { px: 8, pt: 6 },
-        right: { px: 8, pt: 6 },
+        fontSize: { px: 9, pt: 7 },
+        paddingY: { px: 3, pt: 2 },
+        paddingX: { px: 6, pt: 4 },
+        top: { px: 6, pt: 4 },
+        right: { px: 6, pt: 4 },
       },
     },
 
     footer: {
-      padding: { px: 12, pt: 10 },
-      paddingX: { px: 32, pt: 30 },
-      borderTop: { px: 4, pt: 3 },
-      fontSize: { px: 10, pt: 8 },
+      padding: { px: 8, pt: 6 }, // Reduced
+      paddingX: { px: 24, pt: 20 },
+      borderTop: { px: 3, pt: 2 },
+      fontSize: { px: 9, pt: 7 },
     },
 
     grid: {
-      gap: { px: 16, pt: 12 },
+      gap: { px: 12, pt: 8 }, // Reduced gap
     },
   },
 } as const;

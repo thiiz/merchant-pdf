@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     borderColor: DESIGN_TOKENS.colors.gray[200],
     borderBottomWidth: DESIGN_TOKENS.components.productCard.borderBottom.pt,
     overflow: 'hidden',
-    marginBottom: 10,
+    marginBottom: DESIGN_TOKENS.components.grid.gap.pt,
   },
   productImageContainer: {
     height: DESIGN_TOKENS.components.productCard.image.height.pt,
