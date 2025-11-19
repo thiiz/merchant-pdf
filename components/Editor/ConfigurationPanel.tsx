@@ -42,11 +42,19 @@ export const ConfigurationPanel = () => {
   const store = useCatalogStore();
   const [activeTab, setActiveTab] = useState<'content' | 'settings' | 'data'>('content');
   const [productToDelete, setProductToDelete] = useState<{ pageId: string, sectionId: string, productId: string, productName: string } | null>(null);
+  const [sectionToDelete, setSectionToDelete] = useState<{ pageId: string, sectionId: string, sectionTitle: string } | null>(null);
 
   const confirmProductDelete = () => {
     if (productToDelete) {
       store.removeProduct(productToDelete.pageId, productToDelete.sectionId, productToDelete.productId);
       setProductToDelete(null);
+    }
+  };
+
+  const confirmSectionDelete = () => {
+    if (sectionToDelete) {
+      store.removeSection(sectionToDelete.pageId, sectionToDelete.sectionId);
+      setSectionToDelete(null);
     }
   };
 
@@ -99,9 +107,23 @@ export const ConfigurationPanel = () => {
                         {/* Header Section Editor */}
                         {section.type === 'header' && (
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Type className="w-4 h-4 text-blue-500" />
-                              <span className="text-sm font-medium">Título da Seção</span>
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <Type className="w-4 h-4 text-blue-500" />
+                                <span className="text-sm font-medium">Título da Seção</span>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 px-2 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                onClick={() => setSectionToDelete({
+                                  pageId: page.id,
+                                  sectionId: section.id,
+                                  sectionTitle: section.title || 'Seção sem título'
+                                })}
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
                             </div>
                             <Input
                               value={section.title}
@@ -119,15 +141,29 @@ export const ConfigurationPanel = () => {
                                 <Layout className="w-4 h-4 text-purple-500" />
                                 <span className="text-sm font-medium">Grade de Produtos</span>
                               </div>
-                              <select
-                                value={section.columns}
-                                onChange={(e) => store.updateSection(page.id, section.id, { columns: Number(e.target.value) as 2 | 3 | 4 })}
-                                className="text-xs border border-gray-200 rounded px-2 py-1"
-                              >
-                                <option value={2}>2 Colunas</option>
-                                <option value={3}>3 Colunas</option>
-                                <option value={4}>4 Colunas</option>
-                              </select>
+                              <div className="flex items-center gap-2">
+                                <select
+                                  value={section.columns}
+                                  onChange={(e) => store.updateSection(page.id, section.id, { columns: Number(e.target.value) as 2 | 3 | 4 })}
+                                  className="text-xs border border-gray-200 rounded px-2 py-1"
+                                >
+                                  <option value={2}>2 Colunas</option>
+                                  <option value={3}>3 Colunas</option>
+                                  <option value={4}>4 Colunas</option>
+                                </select>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 px-2 text-red-500 hover:text-red-600 hover:bg-red-50"
+                                  onClick={() => setSectionToDelete({
+                                    pageId: page.id,
+                                    sectionId: section.id,
+                                    sectionTitle: 'Grade de Produtos'
+                                  })}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
                             </div>
 
                             {/* Products List */}
@@ -433,6 +469,24 @@ export const ConfigurationPanel = () => {
         }
       >
         <p>Deseja realmente remover o produto <strong>{productToDelete?.productName}</strong>?</p>
+      </Modal>
+
+      <Modal
+        isOpen={!!sectionToDelete}
+        onClose={() => setSectionToDelete(null)}
+        title="Remover Seção"
+        footer={
+          <>
+            <UiButton variant="outline" onClick={() => setSectionToDelete(null)}>
+              Cancelar
+            </UiButton>
+            <UiButton variant="destructive" onClick={confirmSectionDelete}>
+              Remover
+            </UiButton>
+          </>
+        }
+      >
+        <p>Deseja realmente remover a seção <strong>{sectionToDelete?.sectionTitle}</strong>? Todos os itens dentro dela serão removidos.</p>
       </Modal>
     </div>
   );
