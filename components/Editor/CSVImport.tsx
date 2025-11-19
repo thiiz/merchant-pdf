@@ -136,7 +136,7 @@ export const CSVImport = () => {
         const price = parseFloat(priceClean);
 
         return {
-          id: `csv-${Date.now()}-${index}`,
+          id: `prod-csv-${Date.now()}-${index}`,
           name: values[mapIndex.name] || 'Sem nome',
           price: isNaN(price) ? 0 : price,
           image: values[mapIndex.image] || '',
@@ -178,7 +178,7 @@ export const CSVImport = () => {
       store.addPage(pageId);
 
       // Adiciona a seção de produtos nessa página específica
-      const sectionId = `sec-import-${Date.now()}-${index}`;
+      const sectionId = `section-csv-${Date.now()}-${index}`;
       store.addSection(pageId, {
         id: sectionId,
         type: 'product-grid',
