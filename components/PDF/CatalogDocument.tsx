@@ -2,6 +2,7 @@ import { DESIGN_TOKENS } from '@/constants/design-tokens';
 import { CatalogState } from '@/types/catalog';
 import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import React from 'react';
+import { PDFNoStockPlaceholder } from './PDFNoStockPlaceholder';
 
 // Register Inter font from local files
 Font.register({
@@ -250,7 +251,9 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                       return (
                         <View key={product.id} style={[styles.productCard, { width, borderBottomColor: primaryColor }]}>
                           <View style={styles.productImageContainer}>
-                            {product.image ? (
+                            {product.soldOut ? (
+                              <PDFNoStockPlaceholder />
+                            ) : product.image ? (
                               <Image src={product.image} style={styles.productImage} />
                             ) : (
                               <Text style={styles.noImageText}>Sem Imagem</Text>

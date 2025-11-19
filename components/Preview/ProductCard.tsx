@@ -2,6 +2,7 @@ import { DESIGN_TOKENS } from '@/constants/design-tokens';
 import { useCatalogStore } from '@/store/catalogStore';
 import { Product } from '@/types/catalog';
 import React from 'react';
+import { NoStockPlaceholder } from './NoStockPlaceholder';
 
 interface ProductCardProps {
   product: Product;
@@ -28,7 +29,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           height: `${DESIGN_TOKENS.components.productCard.image.height.px}px`
         }}
       >
-        {product.image ? (
+        {product.soldOut ? (
+          <NoStockPlaceholder />
+        ) : product.image ? (
           <img src={product.image} alt={product.name} className="object-contain w-full h-full" />
         ) : (
           <div
