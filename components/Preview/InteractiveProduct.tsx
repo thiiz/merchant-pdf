@@ -51,7 +51,7 @@ export const InteractiveProduct: React.FC<InteractiveProductProps> = ({
       style={style}
       className={cn(
         'relative h-full transition-all',
-        isDragging && 'opacity-50 z-50'
+        isDragging && 'opacity-30'
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

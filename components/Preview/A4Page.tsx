@@ -2,7 +2,7 @@ import { DESIGN_TOKENS } from '@/constants/design-tokens';
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { Page } from '@/types/catalog';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { rectSortingStrategy, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import React from 'react';
 import { InteractiveProduct } from './InteractiveProduct';
 import { InteractiveSection } from './InteractiveSection';
@@ -124,7 +124,7 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
                   {section.type === 'product-grid' && (
                     <SortableContext
                       items={section.products?.map(p => p.id) || []}
-                      strategy={verticalListSortingStrategy}
+                      strategy={rectSortingStrategy}
                     >
                       <div
                         className={cn(

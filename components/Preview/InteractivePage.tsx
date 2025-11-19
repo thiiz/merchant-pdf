@@ -56,7 +56,7 @@ export const InteractivePage: React.FC<InteractivePageProps> = ({ page, index })
       style={style}
       className={cn(
         'relative group print:break-after-page transition-opacity',
-        isDragging && 'opacity-50 cursor-grabbing'
+        isDragging && 'opacity-30 cursor-grabbing'
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

@@ -50,7 +50,7 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({
       style={style}
       className={cn(
         'relative group transition-all',
-        isDragging && 'opacity-50 cursor-grabbing z-50'
+        isDragging && 'opacity-30 cursor-grabbing'
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
