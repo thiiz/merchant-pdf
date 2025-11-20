@@ -75,8 +75,14 @@ export const CSVImport = () => {
         });
       };
 
-      // 1. Tenta ler como UTF-8 (Padrão moderno)
-      let text = await file.text();
+      // 1. Tenta ler como Windows-1252/ISO-8859-1 (Padrão do Excel no Windows)
+      let text = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.onerror = (e) => reject(e);
+        reader.readAsText(file, 'Windows-1252');
+      });
+
       let lines = text.split('\n').filter(line => line.trim() !== '');
       let headers = parseCSVLine(lines[0]);
 
@@ -89,14 +95,9 @@ export const CSVImport = () => {
         stock: findCol(headers, ['estoque atual', 'estoque', 'quantidade']),
       };
 
-      // 2. Se não encontrou colunas essenciais, tenta ISO-8859-1 (Excel antigo/Legado)
+      // 2. Se não encontrou colunas essenciais, tenta UTF-8 (Fallback para arquivos modernos)
       if (mapIndex.name === -1 || mapIndex.price === -1) {
-        text = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target?.result as string);
-          reader.onerror = (e) => reject(e);
-          reader.readAsText(file, 'ISO-8859-1');
-        });
+        text = await file.text(); // UTF-8 é o padrão do .text()
 
         lines = text.split('\n').filter(line => line.trim() !== '');
         headers = parseCSVLine(lines[0]);
