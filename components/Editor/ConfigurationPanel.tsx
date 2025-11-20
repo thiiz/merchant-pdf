@@ -101,6 +101,33 @@ export const ConfigurationPanel = () => {
 
                   {/* Sections */}
                   <div className="space-y-6">
+                    {/* Add Section Buttons - Moved to top */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => store.addSection(page.id, {
+                          id: `sec-${Date.now()}`,
+                          type: 'header',
+                          title: 'NOVA SEÇÃO'
+                        })}
+                      >
+                        <Type className="w-4 h-4 mr-2" /> Título
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => store.addSection(page.id, {
+                          id: `sec-${Date.now()}`,
+                          type: 'product-grid',
+                          columns: 3,
+                          products: []
+                        })}
+                      >
+                        <Layout className="w-4 h-4 mr-2" /> Grade
+                      </Button>
+                    </div>
+
                     {page.sections.map((section, sectionIndex) => (
                       <div key={section.id} className="relative border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
 
@@ -312,33 +339,6 @@ export const ConfigurationPanel = () => {
                         )}
                       </div>
                     ))}
-
-                    {/* Add Section Buttons */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => store.addSection(page.id, {
-                          id: `sec-${Date.now()}`,
-                          type: 'header',
-                          title: 'NOVA SEÇÃO'
-                        })}
-                      >
-                        <Type className="w-4 h-4 mr-2" /> Título
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => store.addSection(page.id, {
-                          id: `sec-${Date.now()}`,
-                          type: 'product-grid',
-                          columns: 3,
-                          products: []
-                        })}
-                      >
-                        <Layout className="w-4 h-4 mr-2" /> Grade
-                      </Button>
-                    </div>
                   </div>
                 </div>
               ))}

@@ -89,7 +89,15 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
   addSection: (pageId, section) =>
     set((state) => ({
       pages: state.pages.map((p) =>
-        p.id === pageId ? { ...p, sections: [...p.sections, section] } : p
+        p.id === pageId
+          ? {
+            ...p,
+            // Insert 'header' sections at the beginning, others at the end
+            sections: section.type === 'header'
+              ? [section, ...p.sections]
+              : [...p.sections, section],
+          }
+          : p
       ),
     })),
 
