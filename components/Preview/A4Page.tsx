@@ -1,5 +1,5 @@
 import { DESIGN_TOKENS } from '@/constants/design-tokens';
-import { cn } from '@/lib/utils';
+import { cn, darkenColor } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { Page } from '@/types/catalog';
 import { rectSortingStrategy, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -22,7 +22,7 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
       <div
         className="flex-grow flex flex-col"
         style={{
-          padding: `${DESIGN_TOKENS.components.page.padding.px}px`,
+          // Padding removed to allow full-width sections
           gap: `${DESIGN_TOKENS.components.header.contentGap.px}px`
         }}
       >
@@ -39,45 +39,81 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
               <InteractiveSection key={section.id} section={section} pageId={page.id}>
                 <div className="w-full">
                   {section.type === 'header' && (
-                    <div style={{ marginBottom: `${DESIGN_TOKENS.components.section.marginBottom.px}px` }}>
-                      <h2
-                        className="font-black uppercase tracking-tight text-gray-900"
-                        style={{
-                          fontSize: `${DESIGN_TOKENS.components.section.title.fontSize.px}px`,
-                          borderLeft: `${DESIGN_TOKENS.components.section.title.borderLeft.px}px solid ${primaryColor}`,
-                          paddingLeft: `${DESIGN_TOKENS.components.section.title.paddingLeft.px}px`,
-                          marginBottom: `${DESIGN_TOKENS.components.section.title.marginBottom.px}px`
-                        }}
-                      >
-                        {section.title}
-                      </h2>
+                    <div
+                      className="flex items-center justify-between w-full"
+                      style={{
+                        marginBottom: `${DESIGN_TOKENS.components.section.marginBottom.px}px`,
+                        backgroundColor: darkenColor(primaryColor, 85), // Dark background
+                        padding: `${DESIGN_TOKENS.components.section.title.paddingLeft.px}px ${DESIGN_TOKENS.components.page.padding.px}px`, // Horizontal padding matches page padding
+                        minHeight: '60px'
+                      }}
+                    >
+                      {/* Left Side: Line + Title */}
+                      <div className="flex items-center">
+                        {/* Red vertical line */}
+                        <div
+                          style={{
+                            width: '4px',
+                            height: '24px',
+                            backgroundColor: primaryColor,
+                            marginRight: '12px'
+                          }}
+                        />
+
+                        <h2
+                          className="font-black uppercase tracking-tight"
+                          style={{
+                            fontSize: `${DESIGN_TOKENS.components.section.title.fontSize.px}px`,
+                            color: '#FFFFFF', // White text
+                            margin: 0,
+                            lineHeight: 1
+                          }}
+                        >
+                          {section.title}
+                        </h2>
+                      </div>
+
+                      {/* Right Side: Logo */}
+                      {logoUrl && (
+                        <div className="ml-4 h-8 w-auto relative">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={logoUrl}
+                            alt="Logo"
+                            className="h-full w-auto object-contain"
+                            style={{ maxHeight: '32px' }}
+                          />
+                        </div>
+                      )}
                     </div>
                   )}
 
                   {section.type === 'product-grid' && (
-                    <SortableContext
-                      items={section.products?.map(p => p.id) || []}
-                      strategy={rectSortingStrategy}
-                    >
-                      <div
-                        className={cn(
-                          "grid",
-                          section.columns === 2 && "grid-cols-2",
-                          section.columns === 3 && "grid-cols-3",
-                          section.columns === 4 && "grid-cols-4"
-                        )}
-                        style={{ gap: `${DESIGN_TOKENS.components.grid.gap.px}px` }}
+                    <div style={{ padding: `0 ${DESIGN_TOKENS.components.page.padding.px}px` }}>
+                      <SortableContext
+                        items={section.products?.map(p => p.id) || []}
+                        strategy={rectSortingStrategy}
                       >
-                        {section.products?.map((product) => (
-                          <InteractiveProduct
-                            key={product.id}
-                            product={product}
-                            pageId={page.id}
-                            sectionId={section.id}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
+                        <div
+                          className={cn(
+                            "grid",
+                            section.columns === 2 && "grid-cols-2",
+                            section.columns === 3 && "grid-cols-3",
+                            section.columns === 4 && "grid-cols-4"
+                          )}
+                          style={{ gap: `${DESIGN_TOKENS.components.grid.gap.px}px` }}
+                        >
+                          {section.products?.map((product) => (
+                            <InteractiveProduct
+                              key={product.id}
+                              product={product}
+                              pageId={page.id}
+                              sectionId={section.id}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </div>
                   )}
                 </div>
               </InteractiveSection>

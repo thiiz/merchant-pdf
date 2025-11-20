@@ -1,4 +1,5 @@
 import { DESIGN_TOKENS } from '@/constants/design-tokens';
+import { darkenColor } from '@/lib/utils';
 import { CatalogState } from '@/types/catalog';
 import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import React from 'react';
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     height: DESIGN_TOKENS.components.header.decoration.height.pt,
   },
   contentContainer: {
-    padding: DESIGN_TOKENS.components.page.padding.pt,
+    // Padding removed to allow full-width sections
     flexGrow: 1,
     gap: DESIGN_TOKENS.components.header.contentGap.pt,
     display: 'flex',
@@ -70,13 +71,33 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: DESIGN_TOKENS.components.section.marginBottom.pt,
   },
+  sectionTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Added space-between
+    paddingLeft: DESIGN_TOKENS.components.section.title.paddingLeft.pt,
+    paddingRight: DESIGN_TOKENS.components.page.padding.pt, // Match page padding
+    paddingTop: 12,
+    paddingBottom: 12,
+    marginBottom: DESIGN_TOKENS.components.section.title.marginBottom.pt,
+    minHeight: 45,
+  },
   sectionTitle: {
     fontSize: DESIGN_TOKENS.components.section.title.fontSize.pt,
-    fontWeight: 'heavy', // 'black' equivalent in PDF
+    fontWeight: 'heavy',
     textTransform: 'uppercase',
-    borderLeftWidth: DESIGN_TOKENS.components.section.title.borderLeft.pt,
-    paddingLeft: DESIGN_TOKENS.components.section.title.paddingLeft.pt,
-    marginBottom: DESIGN_TOKENS.components.section.title.marginBottom.pt,
+    color: '#FFFFFF',
+    lineHeight: 1,
+  },
+  sectionLogo: {
+    height: 24,
+    objectFit: 'contain',
+    marginLeft: 12, // Changed from marginRight to marginLeft
+  },
+  sectionDivider: {
+    width: 3,
+    height: 18,
+    marginRight: 9,
   },
   grid: {
     flexDirection: 'row',
@@ -206,67 +227,86 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
             {page.sections.map((section) => (
               <View key={section.id} style={styles.section}>
                 {section.type === 'header' && (
-                  <Text style={[styles.sectionTitle, { borderColor: primaryColor }]}>
-                    {section.title}
-                  </Text>
+                  <View style={[
+                    styles.sectionTitleContainer,
+                    { backgroundColor: darkenColor(primaryColor, 85) }
+                  ]}>
+                    {/* Left Side: Divider + Title */}
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      {/* Divider */}
+                      <View style={[styles.sectionDivider, { backgroundColor: primaryColor }]} />
+
+                      {/* Title */}
+                      <Text style={styles.sectionTitle}>
+                        {section.title}
+                      </Text>
+                    </View>
+
+                    {/* Right Side: Logo */}
+                    {logoUrl && (
+                      <Image src={logoUrl} style={styles.sectionLogo} />
+                    )}
+                  </View>
                 )}
 
                 {section.type === 'product-grid' && (
-                  <View style={styles.grid}>
-                    {section.products?.map((product) => {
-                      // Calculate width based on columns (approximate for A4 width minus padding)
-                      // A4 width ~595pt. Padding 48pt total (24pt * 2). Content ~547pt.
-                      // Gaps need to be accounted for.
-                      const cols = section.columns || 3;
-                      const gapTotal = (cols - 1) * DESIGN_TOKENS.components.grid.gap.pt;
-                      const availableWidth = 595 - (DESIGN_TOKENS.components.page.padding.pt * 2);
-                      const width = (availableWidth - gapTotal) / cols;
+                  <View style={{ paddingLeft: DESIGN_TOKENS.components.page.padding.pt, paddingRight: DESIGN_TOKENS.components.page.padding.pt }}>
+                    <View style={styles.grid}>
+                      {section.products?.map((product) => {
+                        // Calculate width based on columns (approximate for A4 width minus padding)
+                        // A4 width ~595pt. Padding 48pt total (24pt * 2). Content ~547pt.
+                        // Gaps need to be accounted for.
+                        const cols = section.columns || 3;
+                        const gapTotal = (cols - 1) * DESIGN_TOKENS.components.grid.gap.pt;
+                        const availableWidth = 595 - (DESIGN_TOKENS.components.page.padding.pt * 2);
+                        const width = (availableWidth - gapTotal) / cols;
 
-                      return (
-                        <View key={product.id} style={[styles.productCard, { width, borderBottomColor: primaryColor }]}>
-                          <View style={styles.productImageContainer}>
-                            {product.soldOut ? (
-                              <PDFNoStockPlaceholder />
-                            ) : product.image ? (
-                              <Image src={product.image} style={styles.productImage} />
-                            ) : (
-                              <Text style={styles.noImageText}>Sem Imagem</Text>
-                            )}
-                            {product.soldOut && (
-                              <View style={styles.soldOutBadge}>
-                                <Text>ESGOTADO</Text>
-                              </View>
-                            )}
-                          </View>
-
-                          <View style={styles.productContent}>
-                            <View>
-                              <Text style={styles.productName}>{product.name}</Text>
-                              <View style={styles.specsList}>
-                                {product.specs.map((spec, idx) => (
-                                  <View key={idx} style={styles.specItem}>
-                                    <View style={styles.specDot} />
-                                    <Text style={styles.specText}>{spec}</Text>
-                                  </View>
-                                ))}
-                              </View>
+                        return (
+                          <View key={product.id} style={[styles.productCard, { width, borderBottomColor: primaryColor }]}>
+                            <View style={styles.productImageContainer}>
+                              {product.soldOut ? (
+                                <PDFNoStockPlaceholder />
+                              ) : product.image ? (
+                                <Image src={product.image} style={styles.productImage} />
+                              ) : (
+                                <Text style={styles.noImageText}>Sem Imagem</Text>
+                              )}
+                              {product.soldOut && (
+                                <View style={styles.soldOutBadge}>
+                                  <Text>ESGOTADO</Text>
+                                </View>
+                              )}
                             </View>
 
-                            <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch' }]}>
-                              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                                <Text style={[styles.specText, { fontSize: 8, color: DESIGN_TOKENS.colors.gray[600] }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
+                            <View style={styles.productContent}>
+                              <View>
+                                <Text style={styles.productName}>{product.name}</Text>
+                                <View style={styles.specsList}>
+                                  {product.specs.map((spec, idx) => (
+                                    <View key={idx} style={styles.specItem}>
+                                      <View style={styles.specDot} />
+                                      <Text style={styles.specText}>{spec}</Text>
+                                    </View>
+                                  ))}
+                                </View>
                               </View>
-                              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Text style={styles.priceLabel}>Unidade</Text>
-                                <Text style={styles.priceValue}>
-                                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price / (product.piecesPerBox || 1))}
-                                </Text>
+
+                              <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch' }]}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+                                  <Text style={[styles.specText, { fontSize: 8, color: DESIGN_TOKENS.colors.gray[600] }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
+                                </View>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <Text style={styles.priceLabel}>Unidade</Text>
+                                  <Text style={styles.priceValue}>
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price / (product.piecesPerBox || 1))}
+                                  </Text>
+                                </View>
                               </View>
                             </View>
                           </View>
-                        </View>
-                      );
-                    })}
+                        );
+                      })}
+                    </View>
                   </View>
                 )}
               </View>
