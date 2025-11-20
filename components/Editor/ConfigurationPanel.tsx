@@ -386,56 +386,6 @@ export const ConfigurationPanel = () => {
             </div>
 
             <div className="space-y-4 pt-4 border-t border-gray-200">
-              <h3 className="font-medium text-gray-900">Cabeçalho</h3>
-
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  checked={store.globalSettings.showHeader}
-                  onChange={(e: any) => store.setGlobalSettings({ showHeader: e.target.checked })}
-                  id="show-header"
-                />
-                <Label htmlFor="show-header">Mostrar Cabeçalho</Label>
-              </div>
-
-              {store.globalSettings.showHeader && (
-                <div className="space-y-4 pl-4 border-l-2 border-gray-100 ml-1 animate-in slide-in-from-top-2 fade-in duration-200">
-                  <div className="space-y-2">
-                    <Label>Nome da Empresa</Label>
-                    <Input
-                      value={store.globalSettings.companyName}
-                      onChange={(e: any) => store.setGlobalSettings({ companyName: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Título do Catálogo</Label>
-                    <Input
-                      value={store.globalSettings.headerTitle}
-                      onChange={(e: any) => store.setGlobalSettings({ headerTitle: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Subtítulo / Oferta</Label>
-                    <Input
-                      value={store.globalSettings.headerSubtitle}
-                      onChange={(e: any) => store.setGlobalSettings({ headerSubtitle: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-2 pt-2">
-                    <Checkbox
-                      checked={store.globalSettings.showDate}
-                      onChange={(e: any) => store.setGlobalSettings({ showDate: e.target.checked })}
-                      id="show-date"
-                    />
-                    <Label htmlFor="show-date">Mostrar Data</Label>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-4 pt-4 border-t border-gray-200">
               <h3 className="font-medium text-gray-900">Rodapé</h3>
               <div className="space-y-2">
                 <Label>Texto do Rodapé</Label>

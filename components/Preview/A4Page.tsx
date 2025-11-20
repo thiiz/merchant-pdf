@@ -18,17 +18,6 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
 
   return (
     <div className="w-[210mm] h-[297mm] bg-white shadow-lg mx-auto relative flex flex-col overflow-hidden print:shadow-none print:m-0 print:w-full print:h-full">
-      {/* Header Background Decoration */}
-      {showHeader && (
-        <div
-          className="absolute top-0 left-0 w-full"
-          style={{
-            backgroundColor: primaryColor,
-            height: `${DESIGN_TOKENS.components.header.decoration.height.px}px`
-          }}
-        ></div>
-      )}
-
       {/* Content Area */}
       <div
         className="flex-grow flex flex-col"
@@ -37,62 +26,6 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
           gap: `${DESIGN_TOKENS.components.header.contentGap.px}px`
         }}
       >
-
-        {/* Page Header (Optional, usually on first page or repeated) */}
-        {showHeader && (
-          <div
-            className="flex items-center justify-between"
-            style={{
-              borderBottom: `${DESIGN_TOKENS.components.header.borderBottom.px}px solid ${primaryColor}`,
-              paddingBottom: `${DESIGN_TOKENS.components.header.paddingBottom.px}px`
-            }}
-          >
-            <div className="flex items-center" style={{ gap: `${DESIGN_TOKENS.components.header.logoCompanyGap.px}px` }}>
-              {logoUrl && (
-                <img
-                  src={logoUrl}
-                  alt="Logo"
-                  className="object-contain"
-                  style={{ height: `${DESIGN_TOKENS.components.header.logo.height.px}px` }}
-                />
-              )}
-              <div>
-                <h1
-                  className="font-bold text-gray-900 uppercase tracking-wider"
-                  style={{ fontSize: `${DESIGN_TOKENS.components.header.companyName.fontSize.px}px` }}
-                >
-                  {companyName}
-                </h1>
-                <p style={{
-                  fontSize: `${DESIGN_TOKENS.components.header.subtitle.fontSize.px}px`,
-                  color: DESIGN_TOKENS.components.header.subtitle.color
-                }}>
-                  {headerTitle}
-                </p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p
-                className="font-bold"
-                style={{
-                  color: primaryColor,
-                  fontSize: `${DESIGN_TOKENS.components.header.specialOffer.fontSize.px}px`
-                }}
-              >
-                {headerSubtitle}
-              </p>
-              {showDate && (
-                <p style={{
-                  fontSize: `${DESIGN_TOKENS.components.header.subtitle.fontSize.px}px`,
-                  color: DESIGN_TOKENS.components.header.subtitle.color
-                }}>
-                  {currentDate}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-
         {/* Sections with Drag and Drop */}
         <SortableContext
           items={page.sections.map(s => s.id)}

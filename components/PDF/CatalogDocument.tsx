@@ -201,33 +201,7 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
     <Document>
       {pages.map((page, pageIndex) => (
         <Page key={page.id} size="A4" style={styles.page}>
-          {/* Header Decoration */}
-          {showHeader && (
-            <View style={[styles.headerDecoration, { backgroundColor: primaryColor }]} />
-          )}
-
           <View style={styles.contentContainer}>
-            {/* Page Header */}
-            {showHeader && (
-              <View style={[styles.header, { borderBottomColor: primaryColor }]}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  {logoUrl ? (
-                    <Image src={logoUrl} style={styles.logo} />
-                  ) : null}
-                  <View style={styles.companyInfo}>
-                    <Text style={styles.companyName}>{companyName}</Text>
-                    <Text style={styles.subTitle}>{headerTitle}</Text>
-                  </View>
-                </View>
-                <View style={styles.headerRight}>
-                  <Text style={[styles.specialOffer, { color: primaryColor }]}>{headerSubtitle}</Text>
-                  {showDate && (
-                    <Text style={styles.date}>{currentDate}</Text>
-                  )}
-                </View>
-              </View>
-            )}
-
             {/* Sections */}
             {page.sections.map((section) => (
               <View key={section.id} style={styles.section}>
