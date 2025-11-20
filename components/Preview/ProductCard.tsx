@@ -14,7 +14,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div
-      className="relative flex flex-col h-full bg-white overflow-hidden shadow-sm"
+      className="relative flex flex-col h-full bg-gray-100 overflow-hidden shadow-sm"
       style={{
         borderRadius: `${DESIGN_TOKENS.components.productCard.borderRadius.px}px`,
         border: `${DESIGN_TOKENS.components.productCard.border.px}px solid ${DESIGN_TOKENS.colors.gray[200]}`,
@@ -25,7 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div
         className="relative w-full flex items-center justify-center overflow-hidden"
         style={{
-          backgroundColor: DESIGN_TOKENS.colors.gray[100],
+          backgroundColor: DESIGN_TOKENS.colors.white,
           height: `${DESIGN_TOKENS.components.productCard.image.height.px}px`
         }}
       >
@@ -35,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <img src={product.image} alt={product.name} className="object-contain w-full h-full" />
         ) : (
           <div
-            className="text-gray-400"
+            className="text-gray-600"
             style={{ fontSize: `${DESIGN_TOKENS.components.productCard.spec.fontSize.px}px` }}
           >
             Sem Imagem
@@ -76,7 +76,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {product.specs && product.specs.length > 0 && (
             <ul
-              className="text-gray-600"
+              className="text-gray-800"
               style={{
                 fontSize: `${DESIGN_TOKENS.components.productCard.spec.fontSize.px}px`,
                 marginBottom: `${DESIGN_TOKENS.components.productCard.price.marginTop.px}px`
@@ -106,20 +106,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div
           className="flex flex-col"
           style={{
-            borderTop: `${DESIGN_TOKENS.components.productCard.price.borderTop.px}px solid ${DESIGN_TOKENS.colors.gray[100]}`,
+            borderTop: `${DESIGN_TOKENS.components.productCard.price.borderTop.px}px solid ${DESIGN_TOKENS.colors.gray[200]}`,
             paddingTop: `${DESIGN_TOKENS.components.productCard.price.paddingTop.px}px`,
             marginTop: `${DESIGN_TOKENS.components.productCard.price.marginTop.px}px`
           }}
         >
           <div className="flex justify-between items-center mb-1">
-            <span className="text-gray-400 text-[10px] font-medium">
+            <span className="text-gray-600 text-[10px] font-medium">
               PCS/CX: {product.piecesPerBox || 1}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
             <span
-              className="text-gray-500"
+              className="text-gray-700"
               style={{ fontSize: `${DESIGN_TOKENS.components.productCard.price.label.fontSize.px}px` }}
             >
               Unidade

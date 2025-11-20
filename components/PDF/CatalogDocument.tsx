@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
 
   productCard: {
-    backgroundColor: DESIGN_TOKENS.colors.white,
+    backgroundColor: DESIGN_TOKENS.colors.gray[100],
     borderRadius: DESIGN_TOKENS.components.productCard.borderRadius.pt,
     borderWidth: DESIGN_TOKENS.components.productCard.border.pt,
     borderColor: DESIGN_TOKENS.colors.gray[200],
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   productImageContainer: {
     height: DESIGN_TOKENS.components.productCard.image.height.pt,
-    backgroundColor: DESIGN_TOKENS.colors.gray[100],
+    backgroundColor: DESIGN_TOKENS.colors.white,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   noImageText: {
     fontSize: DESIGN_TOKENS.components.productCard.spec.fontSize.pt,
-    color: DESIGN_TOKENS.colors.gray[400],
+    color: DESIGN_TOKENS.colors.gray[600],
   },
   soldOutBadge: {
     position: 'absolute',
@@ -151,20 +151,20 @@ const styles = StyleSheet.create({
   },
   specText: {
     fontSize: DESIGN_TOKENS.components.productCard.spec.fontSize.pt,
-    color: DESIGN_TOKENS.colors.gray[600],
+    color: DESIGN_TOKENS.colors.gray[800],
   },
   priceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderTopWidth: DESIGN_TOKENS.components.productCard.price.borderTop.pt,
-    borderTopColor: DESIGN_TOKENS.colors.gray[100],
+    borderTopColor: DESIGN_TOKENS.colors.gray[200],
     paddingTop: DESIGN_TOKENS.components.productCard.price.paddingTop.pt,
     marginTop: DESIGN_TOKENS.components.productCard.price.marginTop.pt,
   },
   priceLabel: {
     fontSize: DESIGN_TOKENS.components.productCard.price.label.fontSize.pt,
-    color: DESIGN_TOKENS.colors.gray[500],
+    color: DESIGN_TOKENS.colors.gray[700],
   },
   priceValue: {
     fontSize: DESIGN_TOKENS.components.productCard.price.value.fontSize.pt,
@@ -254,7 +254,7 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
 
                             <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch' }]}>
                               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                                <Text style={[styles.specText, { fontSize: 8 }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
+                                <Text style={[styles.specText, { fontSize: 8, color: DESIGN_TOKENS.colors.gray[600] }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
                               </View>
                               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Text style={styles.priceLabel}>Unidade</Text>
