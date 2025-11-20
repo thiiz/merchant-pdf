@@ -35,7 +35,7 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
             className="flex flex-col"
             style={{ gap: `${DESIGN_TOKENS.components.header.contentGap.px}px` }}
           >
-            {page.sections.map((section) => (
+            {page.sections.map((section, index) => (
               <InteractiveSection key={section.id} section={section} pageId={page.id}>
                 <div className="w-full">
                   {section.type === 'header' && (
@@ -89,7 +89,11 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
                   )}
 
                   {section.type === 'product-grid' && (
-                    <div style={{ padding: `0 ${DESIGN_TOKENS.components.page.padding.px}px` }}>
+                    <div style={{
+                      paddingLeft: `${DESIGN_TOKENS.components.page.padding.px}px`,
+                      paddingRight: `${DESIGN_TOKENS.components.page.padding.px}px`,
+                      paddingTop: index === 0 ? `${DESIGN_TOKENS.components.page.padding.px}px` : '0px'
+                    }}>
                       <SortableContext
                         items={section.products?.map(p => p.id) || []}
                         strategy={rectSortingStrategy}

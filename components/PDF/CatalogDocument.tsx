@@ -224,7 +224,7 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
         <Page key={page.id} size="A4" style={styles.page}>
           <View style={styles.contentContainer}>
             {/* Sections */}
-            {page.sections.map((section) => (
+            {page.sections.map((section, index) => (
               <View key={section.id} style={styles.section}>
                 {section.type === 'header' && (
                   <View style={[
@@ -250,7 +250,11 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                 )}
 
                 {section.type === 'product-grid' && (
-                  <View style={{ paddingLeft: DESIGN_TOKENS.components.page.padding.pt, paddingRight: DESIGN_TOKENS.components.page.padding.pt }}>
+                  <View style={{
+                    paddingLeft: DESIGN_TOKENS.components.page.padding.pt,
+                    paddingRight: DESIGN_TOKENS.components.page.padding.pt,
+                    paddingTop: index === 0 ? DESIGN_TOKENS.components.page.padding.pt : 0
+                  }}>
                     <View style={styles.grid}>
                       {section.products?.map((product) => {
                         // Calculate width based on columns (approximate for A4 width minus padding)
