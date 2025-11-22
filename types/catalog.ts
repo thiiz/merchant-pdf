@@ -4,7 +4,6 @@ export interface Product {
   retailPrice: number;
   wholesalePrice: number;
   dropPrice: number;
-  specs: string[];
   soldOut: boolean;
   piecesPerBox: number;
   image?: string;

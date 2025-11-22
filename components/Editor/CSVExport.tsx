@@ -44,18 +44,13 @@ export const CSVExport = () => {
     }
 
     // Definir cabeçalhos compatíveis com o importador
-    const headers = ["Nome produto", "Preço venda", "Imagem principal", "Marca", "Modelo", "Estoque atual"];
+    const headers = ["Nome produto", "Preço venda", "Imagem principal", "Estoque atual"];
 
     // Gerar conteúdo CSV
     const csvContent = [
       headers.join(';'),
       ...products.map(p => {
-        // Formatar preço (ex: 1200.50 -> 1200,50)
-        const price = p.price.toFixed(2).replace('.', ',');
-
-        // Tentar extrair marca e modelo dos specs (assumindo ordem)
-        const brand = p.specs?.[0] || '';
-        const model = p.specs?.[1] || '';
+        const price = p.retailPrice.toFixed(2).replace('.', ',');
 
         // Estoque (0 = esgotado, 100 = disponível)
         const stock = p.soldOut ? '0' : '100';
@@ -70,8 +65,6 @@ export const CSVExport = () => {
           escape(p.name),
           escape(price),
           escape(p.image || ''),
-          escape(brand),
-          escape(model),
           stock
         ].join(';');
       })

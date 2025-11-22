@@ -74,7 +74,6 @@ export const PDFNoStockPlaceholder: React.FC = () => {
           fill="none"
         />
       </Svg>
-      <Text style={styles.text}>INDISPONÍVEL</Text>
     </View>
   );
 };

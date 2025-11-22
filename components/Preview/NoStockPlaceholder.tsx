@@ -17,7 +17,7 @@ export const NoStockPlaceholder: React.FC = () => {
         className="font-medium uppercase tracking-wider"
         style={{ fontSize: '10px' }}
       >
-        Indisponível
+       
       </span>
     </div>
   );

@@ -98,7 +98,8 @@ export const CSVImport = () => {
 
       let mapIndex = {
         name: findCol(headers, ['nome produto', 'nome', 'descricao']),
-        price: findPriceCol(headers),
+        price: findCol(headers, ['preco venda', 'venda', 'preco', 'valor']),
+        priceCost: findPriceCol(headers),
         image: findCol(headers, ['imagem principal', 'imagem', 'foto', 'url']),
         brand: findCol(headers, ['marca', 'fabricante']),
         model: findCol(headers, ['modelo', 'referencia']),
@@ -115,7 +116,8 @@ export const CSVImport = () => {
 
         mapIndex = {
           name: findCol(headers, ['nome produto', 'nome', 'descricao']),
-          price: findPriceCol(headers),
+          price: findCol(headers, ['preco venda', 'venda', 'preco', 'valor']),
+          priceCost: findPriceCol(headers),
           image: findCol(headers, ['imagem principal', 'imagem', 'foto', 'url']),
           brand: findCol(headers, ['marca', 'fabricante']),
           model: findCol(headers, ['modelo', 'referencia']),
@@ -133,32 +135,32 @@ export const CSVImport = () => {
         const values = parseCSVLine(line);
         if (values.length < headers.length) return null;
 
-        const priceStr = values[mapIndex.price] || '0';
-        // Limpeza robusta de preço: remove tudo que não é número, ponto ou vírgula
-        // Ex: "R$ 1.200,50" -> "1200.50"
-        let priceClean = priceStr.replace(/[^\d.,]/g, '');
+        // Helper para limpar e parsear preços (R$ 1.200,50 -> 1200.50)
+        const parsePriceString = (str: string) => {
+          if (!str) return 0;
+          let clean = str.replace(/[^\d.,]/g, '');
+          if (clean.includes(',') && clean.includes('.')) {
+            clean = clean.replace('.', '').replace(',', '.');
+          } else if (clean.includes(',')) {
+            clean = clean.replace(',', '.');
+          }
+          const val = parseFloat(clean);
+          return isNaN(val) ? 0 : val;
+        };
 
-        // Se tiver vírgula e ponto, assume que ponto é milhar e vírgula é decimal (padrão BR)
-        if (priceClean.includes(',') && priceClean.includes('.')) {
-          priceClean = priceClean.replace('.', '').replace(',', '.');
-        } else if (priceClean.includes(',')) {
-          // Se só tem vírgula, troca por ponto
-          priceClean = priceClean.replace(',', '.');
-        }
-
-        const price = parseFloat(priceClean);
-        const finalPrice = isNaN(price) ? 0 : price;
+        const price = parsePriceString(values[mapIndex.price]);
+        const priceCost = parsePriceString(values[mapIndex.priceCost]);
 
         return {
           id: `prod-csv-${Date.now()}-${index}`,
           name: values[mapIndex.name] || 'Sem nome',
-          retailPrice: finalPrice,
-          wholesalePrice: finalPrice * 0.8, // 20% de desconto automático
-          dropPrice: finalPrice * 0.9, // 10% de desconto automático
+          retailPrice: price,
+          wholesalePrice: priceCost * 1.2, // 20% mais caro que o custo
+          dropPrice: priceCost * 1.4, // 40% mais caro que o custo
           image: values[mapIndex.image] || '',
           soldOut: (parseInt(values[mapIndex.stock] || '0') <= 0),
           piecesPerBox: 1,
-          category: values[mapIndex.category] || ''
+          category: values[mapIndex.category] || '',
         };
       }).filter(Boolean).sort((a: any, b: any) => a.category.localeCompare(b.category));
 

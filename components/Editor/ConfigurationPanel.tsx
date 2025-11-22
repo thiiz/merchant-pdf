@@ -338,7 +338,6 @@ export const ConfigurationPanel = () => {
                                   retailPrice: 0,
                                   wholesalePrice: 0,
                                   dropPrice: 0,
-                                  specs: [],
                                   soldOut: false,
                                   piecesPerBox: 1
                                 })}

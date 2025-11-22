@@ -285,14 +285,6 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                             <View style={styles.productContent}>
                               <View>
                                 <Text style={styles.productName}>{product.name}</Text>
-                                <View style={styles.specsList}>
-                                  {product.specs.map((spec, idx) => (
-                                    <View key={idx} style={styles.specItem}>
-                                      <View style={styles.specDot} />
-                                      <Text style={styles.specText}>{spec}</Text>
-                                    </View>
-                                  ))}
-                                </View>
                               </View>
 
                               <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch', gap: 4 }]}>
