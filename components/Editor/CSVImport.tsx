@@ -103,6 +103,7 @@ export const CSVImport = () => {
         brand: findCol(headers, ['marca', 'fabricante']),
         model: findCol(headers, ['modelo', 'referencia']),
         stock: findCol(headers, ['estoque atual', 'estoque', 'quantidade']),
+        category: findCol(headers, ['nome categoria', 'categoria', 'departamento']),
       };
 
       // 2. Se não encontrou colunas essenciais, tenta UTF-8 (Fallback para arquivos modernos)
@@ -119,6 +120,7 @@ export const CSVImport = () => {
           brand: findCol(headers, ['marca', 'fabricante']),
           model: findCol(headers, ['modelo', 'referencia']),
           stock: findCol(headers, ['estoque atual', 'estoque', 'quantidade']),
+          category: findCol(headers, ['nome categoria', 'categoria', 'departamento']),
         };
       }
 
@@ -155,9 +157,10 @@ export const CSVImport = () => {
           dropPrice: finalPrice * 0.9, // 10% de desconto automático
           image: values[mapIndex.image] || '',
           soldOut: (parseInt(values[mapIndex.stock] || '0') <= 0),
-          piecesPerBox: 1
+          piecesPerBox: 1,
+          category: values[mapIndex.category] || ''
         };
-      }).filter(Boolean);
+      }).filter(Boolean).sort((a: any, b: any) => a.category.localeCompare(b.category));
 
       setPreview(products);
     } catch (err: any) {
@@ -301,6 +304,7 @@ export const CSVImport = () => {
               <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-200">
                 <tr>
                   <th className="px-3 py-2">Produto</th>
+                  <th className="px-3 py-2">Categoria</th>
                   <th className="px-3 py-2">Preço (Varejo)</th>
                   <th className="px-3 py-2">Status</th>
                 </tr>
@@ -309,6 +313,7 @@ export const CSVImport = () => {
                 {preview.slice(0, 10).map((prod) => (
                   <tr key={prod.id} className="bg-white hover:bg-gray-50">
                     <td className="px-3 py-2 truncate max-w-[150px]" title={prod.name}>{prod.name}</td>
+                    <td className="px-3 py-2 truncate max-w-[100px]" title={prod.category}>{prod.category}</td>
                     <td className="px-3 py-2">R$ {prod.retailPrice.toFixed(2)}</td>
                     <td className="px-3 py-2">
                       {prod.soldOut ? (
