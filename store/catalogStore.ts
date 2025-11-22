@@ -16,6 +16,7 @@ interface CatalogStore extends CatalogState {
   reorderSection: (pageId: string, sectionId: string, direction: 'up' | 'down') => void;
   reorderProducts: (pageId: string, sectionId: string, oldIndex: number, newIndex: number) => void;
   moveProduct: (sourcePageId: string, sourceSectionId: string, targetPageId: string, targetSectionId: string, productId: string, newIndex: number) => void;
+  importCatalog: (state: CatalogState) => void;
 }
 
 export const useCatalogStore = create<CatalogStore>((set) => ({
@@ -283,4 +284,10 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
 
       return { pages: newPages };
     }),
+
+  importCatalog: (state) =>
+    set(() => ({
+      pages: state.pages,
+      globalSettings: state.globalSettings,
+    })),
 }));
