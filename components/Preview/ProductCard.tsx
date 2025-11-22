@@ -73,34 +73,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           >
             {product.name}
           </h3>
-
-          {product.specs && product.specs.length > 0 && (
-            <ul
-              className="text-gray-800"
-              style={{
-                fontSize: `${DESIGN_TOKENS.components.productCard.spec.fontSize.px}px`,
-                marginBottom: `${DESIGN_TOKENS.components.productCard.price.marginTop.px}px`
-              }}
-            >
-              {product.specs.map((spec, idx) => (
-                <li
-                  key={idx}
-                  className="flex items-center"
-                  style={{ marginBottom: `${DESIGN_TOKENS.components.productCard.spec.marginBottom.px}px` }}
-                >
-                  <span
-                    className="bg-gray-400 rounded-full"
-                    style={{
-                      width: `${DESIGN_TOKENS.components.productCard.spec.dot.size.px}px`,
-                      height: `${DESIGN_TOKENS.components.productCard.spec.dot.size.px}px`,
-                      marginRight: `${DESIGN_TOKENS.components.productCard.spec.dot.marginRight.px}px`
-                    }}
-                  ></span>
-                  {spec}
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
 
         <div
@@ -119,28 +91,34 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           <div className="grid grid-cols-1 gap-1">
             {/* Varejo */}
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-500">Varejo</span>
-              <span className="font-medium text-gray-700">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.retailPrice)}
-              </span>
-            </div>
+            {product.retailPrice > 0 && (
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-500">Varejo</span>
+                <span className="font-medium text-gray-700">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.retailPrice)}
+                </span>
+              </div>
+            )}
 
             {/* Drop */}
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-500">Drop</span>
-              <span className="font-medium text-gray-700">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.dropPrice)}
-              </span>
-            </div>
+            {product.dropPrice > 0 && (
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-500">Drop</span>
+                <span className="font-medium text-gray-700">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.dropPrice)}
+                </span>
+              </div>
+            )}
 
             {/* Atacado - Destaque */}
-            <div className="flex items-center justify-between bg-gray-50 p-1.5 rounded mt-1">
-              <span className="text-xs font-bold text-gray-900">Atacado</span>
-              <span className="font-bold text-gray-900 text-sm">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.wholesalePrice)}
-              </span>
-            </div>
+            {product.wholesalePrice > 0 && (
+              <div className="flex items-center justify-between bg-gray-50 p-1.5 rounded mt-1">
+                <span className="text-xs font-bold text-gray-900">Atacado</span>
+                <span className="font-bold text-gray-900 text-sm">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.wholesalePrice)}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

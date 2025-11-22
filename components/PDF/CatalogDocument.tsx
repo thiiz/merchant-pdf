@@ -293,36 +293,42 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                                 </View>
 
                                 {/* Varejo */}
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <Text style={[styles.priceLabel, { fontSize: 9 }]}>Varejo</Text>
-                                  <Text style={[styles.priceValue, { fontSize: 9, fontWeight: 'normal' }]}>
-                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.retailPrice)}
-                                  </Text>
-                                </View>
+                                {product.retailPrice > 0 && (
+                                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Text style={[styles.priceLabel, { fontSize: 9 }]}>Varejo</Text>
+                                    <Text style={[styles.priceValue, { fontSize: 9, fontWeight: 'normal' }]}>
+                                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.retailPrice)}
+                                    </Text>
+                                  </View>
+                                )}
 
                                 {/* Drop */}
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <Text style={[styles.priceLabel, { fontSize: 9 }]}>Drop</Text>
-                                  <Text style={[styles.priceValue, { fontSize: 9, fontWeight: 'normal' }]}>
-                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.dropPrice)}
-                                  </Text>
-                                </View>
+                                {product.dropPrice > 0 && (
+                                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Text style={[styles.priceLabel, { fontSize: 9 }]}>Drop</Text>
+                                    <Text style={[styles.priceValue, { fontSize: 9, fontWeight: 'normal' }]}>
+                                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.dropPrice)}
+                                    </Text>
+                                  </View>
+                                )}
 
                                 {/* Atacado */}
-                                <View style={{
-                                  flexDirection: 'row',
-                                  justifyContent: 'space-between',
-                                  alignItems: 'center',
-                                  backgroundColor: '#F3F4F6', // gray-100
-                                  padding: 4,
-                                  borderRadius: 4,
-                                  marginTop: 2
-                                }}>
-                                  <Text style={[styles.priceLabel, { fontSize: 9, fontWeight: 'bold', color: DESIGN_TOKENS.colors.black }]}>Atacado</Text>
-                                  <Text style={[styles.priceValue, { fontSize: 11, color: DESIGN_TOKENS.colors.black }]}>
-                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.wholesalePrice)}
-                                  </Text>
-                                </View>
+                                {product.wholesalePrice > 0 && (
+                                  <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    backgroundColor: '#F3F4F6', // gray-100
+                                    padding: 4,
+                                    borderRadius: 4,
+                                    marginTop: 2
+                                  }}>
+                                    <Text style={[styles.priceLabel, { fontSize: 9, fontWeight: 'bold', color: DESIGN_TOKENS.colors.black }]}>Atacado</Text>
+                                    <Text style={[styles.priceValue, { fontSize: 11, color: DESIGN_TOKENS.colors.black }]}>
+                                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.wholesalePrice)}
+                                    </Text>
+                                  </View>
+                                )}
                               </View>
                             </View>
                           </View>
