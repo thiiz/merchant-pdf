@@ -155,7 +155,7 @@ export const CSVImport = () => {
           id: `prod-csv-${Date.now()}-${index}`,
           name: values[mapIndex.name] || 'Sem nome',
           retailPrice: price,
-          wholesalePrice: priceCost * 1.2, // 20% mais caro que o custo
+          wholesalePrice: priceCost + 5, // 5 reais mais caro que o custo
           dropPrice: priceCost * 1.4, // 40% mais caro que o custo
           image: values[mapIndex.image] || '',
           soldOut: (parseInt(values[mapIndex.stock] || '0') <= 0),
