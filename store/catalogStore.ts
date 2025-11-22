@@ -46,7 +46,9 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
             {
               id: 'prod-1',
               name: 'Exemplo Produto 1',
-              price: 99.90,
+              retailPrice: 99.90,
+              wholesalePrice: 79.90,
+              dropPrice: 89.90,
               specs: ['Spec 1', 'Spec 2'],
               soldOut: false,
               piecesPerBox: 10,
@@ -54,7 +56,9 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
             {
               id: 'prod-2',
               name: 'Exemplo Produto 2',
-              price: 149.90,
+              retailPrice: 149.90,
+              wholesalePrice: 119.90,
+              dropPrice: 134.90,
               specs: ['Spec A', 'Spec B'],
               soldOut: true,
               piecesPerBox: 5,

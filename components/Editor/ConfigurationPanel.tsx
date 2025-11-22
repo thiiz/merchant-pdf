@@ -274,17 +274,43 @@ export const ConfigurationPanel = () => {
                                   </div>
 
                                   {/* Middle Row: Prices */}
-                                  <div className="grid grid-cols-3 gap-3 bg-white p-2 rounded border border-gray-100">
+                                  <div className="grid grid-cols-2 gap-3 bg-white p-2 rounded border border-gray-100">
                                     <div>
-                                      <Label className="text-[10px] text-gray-500 uppercase tracking-wider">Preço (Caixa)</Label>
+                                      <Label className="text-[10px] text-gray-500 uppercase tracking-wider">Varejo</Label>
                                       <div className="relative">
                                         <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">R$</span>
                                         <Input
                                           className="pl-6 h-7 text-sm"
                                           type="number"
                                           step="0.01"
-                                          value={product.price}
-                                          onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { price: Number(e.target.value) })}
+                                          value={product.retailPrice}
+                                          onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { retailPrice: Number(e.target.value) })}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <Label className="text-[10px] text-gray-500 uppercase tracking-wider">Drop</Label>
+                                      <div className="relative">
+                                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">R$</span>
+                                        <Input
+                                          className="pl-6 h-7 text-sm"
+                                          type="number"
+                                          step="0.01"
+                                          value={product.dropPrice}
+                                          onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { dropPrice: Number(e.target.value) })}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <Label className="text-[10px] text-gray-500 uppercase tracking-wider">Atacado</Label>
+                                      <div className="relative">
+                                        <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-gray-400">R$</span>
+                                        <Input
+                                          className="pl-6 h-7 text-sm"
+                                          type="number"
+                                          step="0.01"
+                                          value={product.wholesalePrice}
+                                          onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { wholesalePrice: Number(e.target.value) })}
                                         />
                                       </div>
                                     </div>
@@ -298,23 +324,6 @@ export const ConfigurationPanel = () => {
                                         onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { piecesPerBox: Number(e.target.value) })}
                                       />
                                     </div>
-                                    <div>
-                                      <Label className="text-[10px] text-gray-500 uppercase tracking-wider">Unitário (Calc)</Label>
-                                      <div className="h-7 flex items-center text-sm font-medium text-gray-700">
-                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price / (product.piecesPerBox || 1))}
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {/* Bottom Row: Specs */}
-                                  <div>
-                                    <Label className="text-xs text-gray-500 mb-1 block">Características (Marca, Modelo, etc) - Separe por vírgula</Label>
-                                    <Input
-                                      className="bg-white text-sm"
-                                      placeholder="Ex: Marca X, Modelo Y, 220V"
-                                      value={product.specs.join(', ')}
-                                      onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { specs: e.target.value.split(',').map((s: string) => s.trim()) })}
-                                    />
                                   </div>
                                 </div>
                               ))}
@@ -326,8 +335,10 @@ export const ConfigurationPanel = () => {
                                 onClick={() => store.addProduct(page.id, section.id, {
                                   id: `prod-${Date.now()}`,
                                   name: 'Novo Produto',
-                                  price: 0,
-                                  specs: ['Marca', 'Modelo'],
+                                  retailPrice: 0,
+                                  wholesalePrice: 0,
+                                  dropPrice: 0,
+                                  specs: [],
                                   soldOut: false,
                                   piecesPerBox: 1
                                 })}

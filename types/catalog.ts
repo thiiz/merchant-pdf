@@ -1,7 +1,9 @@
 export interface Product {
   id: string;
   name: string;
-  price: number;
+  retailPrice: number;
+  wholesalePrice: number;
+  dropPrice: number;
   specs: string[];
   soldOut: boolean;
   piecesPerBox: number;

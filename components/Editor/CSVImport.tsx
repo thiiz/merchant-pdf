@@ -86,9 +86,19 @@ export const CSVImport = () => {
       let lines = text.split('\n').filter(line => line.trim() !== '');
       let headers = parseCSVLine(lines[0]);
 
+      // Helper to find price column with priority
+      const findPriceCol = (headers: string[]) => {
+        // 1. Tenta achar preço de custo (Prioridade solicitada)
+        const costIndex = findCol(headers, ['preco de custo', 'custo', 'preco custo']);
+        if (costIndex !== -1) return costIndex;
+        
+        // 2. Se não achar, tenta preço de venda/comum
+        return findCol(headers, ['preco venda', 'venda', 'preco', 'valor']);
+      };
+
       let mapIndex = {
         name: findCol(headers, ['nome produto', 'nome', 'descricao']),
-        price: findCol(headers, ['preco venda', 'venda', 'preco', 'valor']),
+        price: findPriceCol(headers),
         image: findCol(headers, ['imagem principal', 'imagem', 'foto', 'url']),
         brand: findCol(headers, ['marca', 'fabricante']),
         model: findCol(headers, ['modelo', 'referencia']),
@@ -104,7 +114,7 @@ export const CSVImport = () => {
 
         mapIndex = {
           name: findCol(headers, ['nome produto', 'nome', 'descricao']),
-          price: findCol(headers, ['preco venda', 'venda', 'preco', 'valor']),
+          price: findPriceCol(headers),
           image: findCol(headers, ['imagem principal', 'imagem', 'foto', 'url']),
           brand: findCol(headers, ['marca', 'fabricante']),
           model: findCol(headers, ['modelo', 'referencia']),
@@ -135,16 +145,15 @@ export const CSVImport = () => {
         }
 
         const price = parseFloat(priceClean);
+        const finalPrice = isNaN(price) ? 0 : price;
 
         return {
           id: `prod-csv-${Date.now()}-${index}`,
           name: values[mapIndex.name] || 'Sem nome',
-          price: isNaN(price) ? 0 : price,
+          retailPrice: finalPrice,
+          wholesalePrice: finalPrice * 0.8, // 20% de desconto automático
+          dropPrice: finalPrice * 0.9, // 10% de desconto automático
           image: values[mapIndex.image] || '',
-          specs: [
-            values[mapIndex.brand],
-            values[mapIndex.model]
-          ].filter(Boolean),
           soldOut: (parseInt(values[mapIndex.stock] || '0') <= 0),
           piecesPerBox: 1
         };
@@ -292,7 +301,7 @@ export const CSVImport = () => {
               <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-200">
                 <tr>
                   <th className="px-3 py-2">Produto</th>
-                  <th className="px-3 py-2">Preço</th>
+                  <th className="px-3 py-2">Preço (Varejo)</th>
                   <th className="px-3 py-2">Status</th>
                 </tr>
               </thead>
@@ -300,7 +309,7 @@ export const CSVImport = () => {
                 {preview.slice(0, 10).map((prod) => (
                   <tr key={prod.id} className="bg-white hover:bg-gray-50">
                     <td className="px-3 py-2 truncate max-w-[150px]" title={prod.name}>{prod.name}</td>
-                    <td className="px-3 py-2">R$ {prod.price.toFixed(2)}</td>
+                    <td className="px-3 py-2">R$ {prod.retailPrice.toFixed(2)}</td>
                     <td className="px-3 py-2">
                       {prod.soldOut ? (
                         <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded">Esgotado</span>

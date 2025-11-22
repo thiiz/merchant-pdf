@@ -232,7 +232,7 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                     { backgroundColor: darkenColor(primaryColor, 85) }
                   ]}>
                     {/* Left Side: Divider + Title */}
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                       {/* Divider */}
                       <View style={[styles.sectionDivider, { backgroundColor: primaryColor }]} />
 
@@ -295,14 +295,40 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                                 </View>
                               </View>
 
-                              <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch' }]}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                                  <Text style={[styles.specText, { fontSize: 8, color: DESIGN_TOKENS.colors.gray[600] }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
+                              <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch', gap: 4 }]}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
+                                  <Text style={[styles.specText, { fontSize: 8, color: DESIGN_TOKENS.colors.gray[600], textTransform: 'uppercase' }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
                                 </View>
+
+                                {/* Varejo */}
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <Text style={styles.priceLabel}>Unidade</Text>
-                                  <Text style={styles.priceValue}>
-                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price / (product.piecesPerBox || 1))}
+                                  <Text style={[styles.priceLabel, { fontSize: 9 }]}>Varejo</Text>
+                                  <Text style={[styles.priceValue, { fontSize: 9, fontWeight: 'normal' }]}>
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.retailPrice)}
+                                  </Text>
+                                </View>
+
+                                {/* Drop */}
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                  <Text style={[styles.priceLabel, { fontSize: 9 }]}>Drop</Text>
+                                  <Text style={[styles.priceValue, { fontSize: 9, fontWeight: 'normal' }]}>
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.dropPrice)}
+                                  </Text>
+                                </View>
+
+                                {/* Atacado */}
+                                <View style={{
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  alignItems: 'center',
+                                  backgroundColor: '#F3F4F6', // gray-100
+                                  padding: 4,
+                                  borderRadius: 4,
+                                  marginTop: 2
+                                }}>
+                                  <Text style={[styles.priceLabel, { fontSize: 9, fontWeight: 'bold', color: DESIGN_TOKENS.colors.black }]}>Atacado</Text>
+                                  <Text style={[styles.priceValue, { fontSize: 11, color: DESIGN_TOKENS.colors.black }]}>
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.wholesalePrice)}
                                   </Text>
                                 </View>
                               </View>

@@ -104,7 +104,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         <div
-          className="flex flex-col"
+          className="flex flex-col gap-2"
           style={{
             borderTop: `${DESIGN_TOKENS.components.productCard.price.borderTop.px}px solid ${DESIGN_TOKENS.colors.gray[200]}`,
             paddingTop: `${DESIGN_TOKENS.components.productCard.price.paddingTop.px}px`,
@@ -112,24 +112,35 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           }}
         >
           <div className="flex justify-between items-center mb-1">
-            <span className="text-gray-600 text-[10px] font-medium">
+            <span className="text-gray-500 text-[10px] font-medium uppercase tracking-wider">
               PCS/CX: {product.piecesPerBox || 1}
             </span>
           </div>
 
-          <div className="flex items-center justify-between">
-            <span
-              className="text-gray-700"
-              style={{ fontSize: `${DESIGN_TOKENS.components.productCard.price.label.fontSize.px}px` }}
-            >
-              Unidade
-            </span>
-            <span
-              className="font-bold text-gray-900"
-              style={{ fontSize: `${DESIGN_TOKENS.components.productCard.price.value.fontSize.px}px` }}
-            >
-              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.price / (product.piecesPerBox || 1))}
-            </span>
+          <div className="grid grid-cols-1 gap-1">
+            {/* Varejo */}
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-500">Varejo</span>
+              <span className="font-medium text-gray-700">
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.retailPrice)}
+              </span>
+            </div>
+
+            {/* Drop */}
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-500">Drop</span>
+              <span className="font-medium text-gray-700">
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.dropPrice)}
+              </span>
+            </div>
+
+            {/* Atacado - Destaque */}
+            <div className="flex items-center justify-between bg-gray-50 p-1.5 rounded mt-1">
+              <span className="text-xs font-bold text-gray-900">Atacado</span>
+              <span className="font-bold text-gray-900 text-sm">
+                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(product.wholesalePrice)}
+              </span>
+            </div>
           </div>
         </div>
       </div>
