@@ -44,7 +44,7 @@ export const CSVExport = () => {
     }
 
     // Definir cabeçalhos compatíveis com o importador
-    const headers = ["Nome produto", "Preço venda", "Imagem principal", "Estoque atual"];
+    const headers = ["Nome produto", "SKU", "Preço venda", "Imagem principal", "Estoque atual"];
 
     // Gerar conteúdo CSV
     const csvContent = [
@@ -63,6 +63,7 @@ export const CSVExport = () => {
 
         return [
           escape(p.name),
+          escape(p.sku || ''),
           escape(price),
           escape(p.image || ''),
           stock

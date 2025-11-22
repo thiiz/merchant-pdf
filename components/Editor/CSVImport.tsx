@@ -98,6 +98,7 @@ export const CSVImport = () => {
 
       let mapIndex = {
         name: findCol(headers, ['nome produto', 'nome', 'descricao']),
+        sku: findCol(headers, ['sku', 'codigo', 'referencia', 'ref']),
         price: findCol(headers, ['preco venda', 'venda', 'preco', 'valor']),
         priceCost: findPriceCol(headers),
         image: findCol(headers, ['imagem principal', 'imagem', 'foto', 'url']),
@@ -116,6 +117,7 @@ export const CSVImport = () => {
 
         mapIndex = {
           name: findCol(headers, ['nome produto', 'nome', 'descricao']),
+          sku: findCol(headers, ['sku', 'codigo', 'referencia', 'ref']),
           price: findCol(headers, ['preco venda', 'venda', 'preco', 'valor']),
           priceCost: findPriceCol(headers),
           image: findCol(headers, ['imagem principal', 'imagem', 'foto', 'url']),
@@ -154,6 +156,7 @@ export const CSVImport = () => {
         return {
           id: `prod-csv-${Date.now()}-${index}`,
           name: values[mapIndex.name] || 'Sem nome',
+          sku: values[mapIndex.sku] || undefined,
           retailPrice: price,
           wholesalePrice: priceCost + 5, // 5 reais mais caro que o custo
           dropPrice: priceCost * 1.4, // 40% mais caro que o custo

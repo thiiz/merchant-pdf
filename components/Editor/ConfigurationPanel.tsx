@@ -247,6 +247,16 @@ export const ConfigurationPanel = () => {
                                         />
                                       </div>
 
+                                      <div>
+                                        <Label className="text-xs text-gray-500 mb-1 block">SKU</Label>
+                                        <Input
+                                          className="bg-white"
+                                          placeholder="Ex: ABC-123"
+                                          value={product.sku || ''}
+                                          onChange={(e: any) => store.updateProduct(page.id, section.id, product.id, { sku: e.target.value })}
+                                        />
+                                      </div>
+
                                       <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                           <Checkbox

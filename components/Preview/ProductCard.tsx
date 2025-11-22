@@ -73,6 +73,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           >
             {product.name}
           </h3>
+          {product.sku && (
+            <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">
+              SKU: {product.sku}
+            </p>
+          )}
         </div>
 
         <div

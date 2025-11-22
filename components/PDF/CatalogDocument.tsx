@@ -285,6 +285,11 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                             <View style={styles.productContent}>
                               <View>
                                 <Text style={styles.productName}>{product.name}</Text>
+                                {product.sku && (
+                                  <Text style={{ fontSize: 7, color: DESIGN_TOKENS.colors.gray[500], textTransform: 'uppercase', marginTop: 2 }}>
+                                    SKU: {product.sku}
+                                  </Text>
+                                )}
                               </View>
 
                               <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch', gap: 4 }]}>
