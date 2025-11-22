@@ -75,10 +75,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </h3>
           {product.sku && (
             <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-1">
-              SKU: {product.sku}
+              {product.sku}
             </p>
           )}
         </div>
+
+        {/* Specs List */}
+        {product.specs && product.specs.length > 0 && (
+          <div className="space-y-1 py-2">
+            {product.specs.map((spec, index) => (
+              <div key={index} className="flex items-start gap-1.5">
+                <span className="text-gray-400 text-[8px] mt-0.5">•</span>
+                <span className="text-[10px] text-gray-600 leading-tight">{spec}</span>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div
           className="flex flex-col gap-2"

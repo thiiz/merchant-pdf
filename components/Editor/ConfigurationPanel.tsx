@@ -335,6 +335,55 @@ export const ConfigurationPanel = () => {
                                       />
                                     </div>
                                   </div>
+
+                                  {/* Specs Section */}
+                                  <div className="bg-white p-2 rounded border border-gray-100 space-y-2">
+                                    <Label className="text-[10px] text-gray-500 uppercase tracking-wider">Especificações</Label>
+                                    
+                                    {/* Specs List */}
+                                    {product.specs && product.specs.length > 0 && (
+                                      <div className="space-y-1">
+                                        {product.specs.map((spec, specIndex) => (
+                                          <div key={specIndex} className="flex gap-1">
+                                            <Input
+                                              className="h-7 text-xs flex-1"
+                                              placeholder="Ex: Cor azul"
+                                              value={spec}
+                                              onChange={(e: any) => {
+                                                const newSpecs = [...(product.specs || [])];
+                                                newSpecs[specIndex] = e.target.value;
+                                                store.updateProduct(page.id, section.id, product.id, { specs: newSpecs });
+                                              }}
+                                            />
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              className="h-7 w-7 p-0 text-red-500 hover:text-red-600"
+                                              onClick={() => {
+                                                const newSpecs = product.specs?.filter((_, i) => i !== specIndex);
+                                                store.updateProduct(page.id, section.id, product.id, { specs: newSpecs });
+                                              }}
+                                            >
+                                              <Trash2 className="w-3 h-3" />
+                                            </Button>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                    
+                                    {/* Add Spec Button */}
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="w-full h-7 text-xs"
+                                      onClick={() => {
+                                        const newSpecs = [...(product.specs || []), ''];
+                                        store.updateProduct(page.id, section.id, product.id, { specs: newSpecs });
+                                      }}
+                                    >
+                                      <Plus className="w-3 h-3 mr-1" /> Adicionar Especificação
+                                    </Button>
+                                  </div>
                                 </div>
                               ))}
 

@@ -99,6 +99,7 @@ export const CSVImport = () => {
       let mapIndex = {
         name: findCol(headers, ['nome produto', 'nome', 'descricao']),
         sku: findCol(headers, ['sku', 'codigo', 'referencia', 'ref']),
+        specs: findCol(headers, ['especificacoes', 'specs', 'caracteristicas']),
         price: findCol(headers, ['preco venda', 'venda', 'preco', 'valor']),
         priceCost: findPriceCol(headers),
         image: findCol(headers, ['imagem principal', 'imagem', 'foto', 'url']),
@@ -118,6 +119,7 @@ export const CSVImport = () => {
         mapIndex = {
           name: findCol(headers, ['nome produto', 'nome', 'descricao']),
           sku: findCol(headers, ['sku', 'codigo', 'referencia', 'ref']),
+          specs: findCol(headers, ['especificacoes', 'specs', 'caracteristicas']),
           price: findCol(headers, ['preco venda', 'venda', 'preco', 'valor']),
           priceCost: findPriceCol(headers),
           image: findCol(headers, ['imagem principal', 'imagem', 'foto', 'url']),
@@ -153,10 +155,15 @@ export const CSVImport = () => {
         const price = parsePriceString(values[mapIndex.price]);
         const priceCost = parsePriceString(values[mapIndex.priceCost]);
 
+        // Parse specs (pipe-separated string to array)
+        const specsString = values[mapIndex.specs] || '';
+        const specs = specsString ? specsString.split('|').map(s => s.trim()).filter(Boolean) : undefined;
+
         return {
           id: `prod-csv-${Date.now()}-${index}`,
           name: values[mapIndex.name] || 'Sem nome',
           sku: values[mapIndex.sku] || undefined,
+          specs: specs,
           retailPrice: price,
           wholesalePrice: priceCost + 5, // 5 reais mais caro que o custo
           dropPrice: priceCost * 1.4, // 40% mais caro que o custo

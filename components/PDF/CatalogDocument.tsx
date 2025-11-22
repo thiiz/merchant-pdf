@@ -287,10 +287,22 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                                 <Text style={styles.productName}>{product.name}</Text>
                                 {product.sku && (
                                   <Text style={{ fontSize: 7, color: DESIGN_TOKENS.colors.gray[500], textTransform: 'uppercase', marginTop: 2 }}>
-                                    SKU: {product.sku}
+                                    {product.sku}
                                   </Text>
                                 )}
                               </View>
+
+                              {/* Specs List */}
+                              {product.specs && product.specs.length > 0 && (
+                                <View style={styles.specsList}>
+                                  {product.specs.map((spec, index) => (
+                                    <View key={index} style={styles.specItem}>
+                                      <View style={styles.specDot} />
+                                      <Text style={styles.specText}>{spec}</Text>
+                                    </View>
+                                  ))}
+                                </View>
+                              )}
 
                               <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch', gap: 4 }]}>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>

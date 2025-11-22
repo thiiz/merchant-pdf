@@ -44,7 +44,7 @@ export const CSVExport = () => {
     }
 
     // Definir cabeçalhos compatíveis com o importador
-    const headers = ["Nome produto", "SKU", "Preço venda", "Imagem principal", "Estoque atual"];
+    const headers = ["Nome produto", "SKU", "Especificações", "Preço venda", "Imagem principal", "Estoque atual"];
 
     // Gerar conteúdo CSV
     const csvContent = [
@@ -61,9 +61,13 @@ export const CSVExport = () => {
           return `"${String(str).replace(/"/g, '""')}"`;
         };
 
+        // Specs: join array with pipe separator
+        const specsString = p.specs && p.specs.length > 0 ? p.specs.join(' | ') : '';
+
         return [
           escape(p.name),
           escape(p.sku || ''),
+          escape(specsString),
           escape(price),
           escape(p.image || ''),
           stock
