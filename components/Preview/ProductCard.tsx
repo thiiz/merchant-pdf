@@ -2,17 +2,67 @@ import { DESIGN_TOKENS } from '@/constants/design-tokens';
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { Product } from '@/types/catalog';
-import React from 'react';
+import React, { useState } from 'react';
 import { NoStockPlaceholder } from './NoStockPlaceholder';
 
 interface ProductCardProps {
   product: Product;
+  pageId?: string;
+  sectionId?: string;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { globalSettings, selectedId, selectItem } = useCatalogStore();
+export const ProductCard: React.FC<ProductCardProps> = ({ product, pageId, sectionId }) => {
+  const { globalSettings, selectedId, selectItem, updateProduct, pages } = useCatalogStore();
   const { primaryColor } = globalSettings;
   const isSelected = selectedId === product.id;
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  // Find the pageId and sectionId if not provided
+  let foundPageId = pageId;
+  let foundSectionId = sectionId;
+  
+  if (!foundPageId || !foundSectionId) {
+    for (const p of pages) {
+      for (const s of p.sections) {
+        const found = s.products?.find(prod => prod.id === product.id);
+        if (found) {
+          foundPageId = p.id;
+          foundSectionId = s.id;
+          break;
+        }
+      }
+      if (foundPageId) break;
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    const imageFile = files.find(file => file.type.startsWith('image/'));
+
+    if (imageFile && foundPageId && foundSectionId) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateProduct(foundPageId, foundSectionId, product.id, { image: reader.result as string });
+      };
+      reader.readAsDataURL(imageFile);
+    }
+  };
 
   return (
     <div
@@ -20,9 +70,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         e.stopPropagation();
         selectItem('product', product.id);
       }}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       className={cn(
         "relative flex flex-col h-full bg-gray-100 overflow-hidden shadow-sm cursor-pointer transition-all",
-        isSelected ? "ring-2 ring-offset-2 ring-blue-500" : "hover:shadow-md"
+        isSelected ? "ring-2 ring-offset-2 ring-blue-500" : "hover:shadow-md",
+        isDragOver && "ring-4 ring-green-500 ring-offset-2 bg-green-50"
       )}
       style={{
         borderRadius: `${DESIGN_TOKENS.components.productCard.borderRadius.px}px`,

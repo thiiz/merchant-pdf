@@ -85,7 +85,7 @@ export const InteractiveProduct: React.FC<InteractiveProductProps> = ({
         'h-full transition-all duration-200',
         isHovered && 'ring-2 ring-blue-300 ring-offset-2 rounded-lg'
       )}>
-        <ProductCard product={product} />
+        <ProductCard product={product} pageId={pageId} sectionId={sectionId} />
       </div>
 
 
