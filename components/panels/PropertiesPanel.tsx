@@ -476,16 +476,18 @@ const SectionForm = ({ sectionId }: { sectionId: string }) => {
         <div className="space-y-4">
             <h3 className="font-medium text-sm text-gray-900 border-b pb-2">Editar Seção</h3>
             
-            <div className="space-y-3">
-                <label className="text-xs font-medium text-gray-500">Título</label>
-                <input 
-                    type="text" 
-                    value={section.title || ''}
-                    onChange={(e) => store.updateSection(pageId, sectionId, { title: e.target.value })}
-                    className="w-full text-xs border rounded px-2 py-1.5"
-                    placeholder="Sem título"
-                />
-            </div>
+            {section.type === 'header' && (
+                <div className="space-y-3">
+                    <label className="text-xs font-medium text-gray-500">Título</label>
+                    <input 
+                        type="text" 
+                        value={section.title || ''}
+                        onChange={(e) => store.updateSection(pageId, sectionId, { title: e.target.value })}
+                        className="w-full text-xs border rounded px-2 py-1.5"
+                        placeholder="Sem título"
+                    />
+                </div>
+            )}
 
             {section.type === 'product-grid' && (
                  <div className="space-y-3">
@@ -557,6 +559,22 @@ const SectionForm = ({ sectionId }: { sectionId: string }) => {
                     </DndContext>
                 </div>
             )}
+
+            <div className="pt-4 border-t border-gray-100 mt-4">
+                <Button 
+                    variant="destructive" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => {
+                        if(confirm('Remover seção?')) {
+                            store.removeSection(pageId, sectionId);
+                            store.selectItem(null, null);
+                        }
+                    }}
+                >
+                    Remover Seção
+                </Button>
+            </div>
 
         </div>
     );
