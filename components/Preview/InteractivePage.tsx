@@ -12,7 +12,7 @@ interface InteractivePageProps {
 
 export const InteractivePage: React.FC<InteractivePageProps> = ({ page, index }) => {
   return (
-    <div className="relative print:break-after-page">
+    <div id={page.id} className="relative print:break-after-page">
       <A4Page page={page} />
     </div>
   );

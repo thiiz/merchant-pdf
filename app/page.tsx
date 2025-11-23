@@ -17,8 +17,10 @@ import {
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
+import { useEffect } from 'react';
+
 export default function Home() {
-  const { pages, reorderProducts, moveProduct } = useCatalogStore();
+  const { pages, reorderProducts, moveProduct, selectedId, selectedType } = useCatalogStore();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -98,6 +100,15 @@ export default function Home() {
       }
     }
   };
+
+  useEffect(() => {
+    if (selectedType === 'page' && selectedId) {
+      const element = document.getElementById(selectedId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [selectedId, selectedType]);
 
   return (
     <EditorLayout
