@@ -1,12 +1,12 @@
 'use client';
 
+import { Button as UiButton } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { CatalogState } from '@/types/catalog';
 import { Upload } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { Button as UiButton } from '../ui/Button';
-import { Modal } from '../ui/Modal';
 
 const Button = ({ className, variant = 'primary', size = 'md', ...props }: any) => {
   const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";

@@ -1,4 +1,5 @@
 import { DESIGN_TOKENS } from '@/constants/design-tokens';
+import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { Product } from '@/types/catalog';
 import React from 'react';
@@ -9,12 +10,20 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { globalSettings } = useCatalogStore();
+  const { globalSettings, selectedId, selectItem } = useCatalogStore();
   const { primaryColor } = globalSettings;
+  const isSelected = selectedId === product.id;
 
   return (
     <div
-      className="relative flex flex-col h-full bg-gray-100 overflow-hidden shadow-sm"
+      onClick={(e) => {
+        e.stopPropagation();
+        selectItem('product', product.id);
+      }}
+      className={cn(
+        "relative flex flex-col h-full bg-gray-100 overflow-hidden shadow-sm cursor-pointer transition-all",
+        isSelected ? "ring-2 ring-offset-2 ring-blue-500" : "hover:shadow-md"
+      )}
       style={{
         borderRadius: `${DESIGN_TOKENS.components.productCard.borderRadius.px}px`,
         border: `${DESIGN_TOKENS.components.productCard.border.px}px solid ${DESIGN_TOKENS.colors.gray[200]}`,
@@ -60,7 +69,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* Content */}
       <div
-        className="flex flex-col flex-grow justify-between"
+        className="flex flex-col grow justify-between"
         style={{ padding: `${DESIGN_TOKENS.components.productCard.padding.px}px` }}
       >
         <div>

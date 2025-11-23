@@ -1,10 +1,10 @@
 'use client';
 
+import { Modal } from '@/components/ui/Modal';
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { Download } from 'lucide-react';
 import { useState } from 'react';
-import { Modal } from '../ui/Modal';
 
 const Button = ({ className, variant = 'primary', size = 'md', ...props }: any) => {
   const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";

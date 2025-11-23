@@ -1,24 +1,26 @@
 'use client';
 
-import { ConfigurationPanel } from '@/components/Editor/ConfigurationPanel';
+import { EditorLayout } from '@/components/layouts/EditorLayout';
+import { PropertiesPanel } from '@/components/panels/PropertiesPanel';
+import { StructurePanel } from '@/components/panels/StructurePanel';
 import { PDFDownloadButton } from '@/components/PDF/PDFDownloadButton';
 import { PageOverlay, SectionOverlay } from '@/components/Preview/DragOverlays';
 import { InteractivePage } from '@/components/Preview/InteractivePage';
 import { ProductCard } from '@/components/Preview/ProductCard';
 import { useCatalogStore } from '@/store/catalogStore';
 import {
-  closestCenter,
-  defaultDropAnimationSideEffects,
-  DndContext,
-  DragEndEvent,
-  DragOverEvent,
-  DragOverlay,
-  DragStartEvent,
-  DropAnimation,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors
+    closestCenter,
+    defaultDropAnimationSideEffects,
+    DndContext,
+    DragEndEvent,
+    DragOverEvent,
+    DragOverlay,
+    DragStartEvent,
+    DropAnimation,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors
 } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useState } from 'react';
@@ -194,56 +196,53 @@ export default function Home() {
   };
 
   return (
-    <main className="flex h-screen w-full bg-gray-100 overflow-hidden font-sans text-gray-900">
-      {/* Left Panel: Editor */}
-      <div className="w-[400px] h-full flex-shrink-0 z-10 shadow-xl print:hidden">
-        <ConfigurationPanel />
-      </div>
-
-      {/* Right Panel: Preview */}
-      <div className="flex-1 h-full overflow-y-auto bg-gray-200/50 p-8 relative flex flex-col items-center">
-
-        {/* Toolbar */}
-        <div className="sticky top-4 z-20 mb-8 flex gap-4 bg-white/80 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20 print:hidden">
-          <PDFDownloadButton />
-        </div>
-
-        {/* A4 Pages Container with Drag and Drop */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={pages.map(p => p.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <div className="flex flex-col gap-8 print:gap-0">
-              {pages.map((page, index) => (
-                <InteractivePage key={page.id} page={page} index={index} />
-              ))}
+    <EditorLayout
+      leftPanel={<StructurePanel />}
+      rightPanel={<PropertiesPanel />}
+      centerPanel={
+        <div className="h-full overflow-y-auto bg-gray-200/50 p-8 relative flex flex-col items-center" onClick={() => setActiveId(null)}>
+            {/* Toolbar */}
+            <div className="sticky top-4 z-20 mb-8 flex gap-4 bg-white/80 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20 print:hidden">
+              <PDFDownloadButton />
             </div>
-          </SortableContext>
 
-          <DragOverlay dropAnimation={dropAnimation}>
-            {activeType === 'page' && activeItem && (
-              <PageOverlay page={activeItem} index={pages.findIndex(p => p.id === activeItem.id)} />
-            )}
-            {activeType === 'section' && activeItem && (
-              <SectionOverlay section={activeItem} />
-            )}
-            {activeType === 'product' && activeItem && (
-              <div className="w-[200px] h-[300px] cursor-grabbing">
-                <ProductCard product={activeItem} />
-              </div>
-            )}
-          </DragOverlay>
-        </DndContext>
+            {/* A4 Pages Container with Drag and Drop */}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={pages.map(p => p.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="flex flex-col gap-8 print:gap-0">
+                  {pages.map((page, index) => (
+                    <InteractivePage key={page.id} page={page} index={index} />
+                  ))}
+                </div>
+              </SortableContext>
 
-        <div className="h-20 print:hidden"></div>
-      </div>
-    </main>
+              <DragOverlay dropAnimation={dropAnimation}>
+                {activeType === 'page' && activeItem && (
+                  <PageOverlay page={activeItem} index={pages.findIndex(p => p.id === activeItem.id)} />
+                )}
+                {activeType === 'section' && activeItem && (
+                  <SectionOverlay section={activeItem} />
+                )}
+                {activeType === 'product' && activeItem && (
+                  <div className="w-[200px] h-[300px] cursor-grabbing">
+                    <ProductCard product={activeItem} />
+                  </div>
+                )}
+              </DragOverlay>
+            </DndContext>
+
+            <div className="h-20 print:hidden"></div>
+        </div>
+      }
+    />
   );
 }
