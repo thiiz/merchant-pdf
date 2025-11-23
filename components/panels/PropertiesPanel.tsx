@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
 import { ArrowDown, ArrowUp, ImageIcon, Plus, Trash2, X } from 'lucide-react';
@@ -110,6 +111,7 @@ const GlobalSettingsForm = () => {
 
 const ProductForm = ({ productId }: { productId: string }) => {
     const store = useCatalogStore();
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     // Helper to find product
     let product: any = null;
     let pageId = '';
@@ -202,41 +204,41 @@ const ProductForm = ({ productId }: { productId: string }) => {
 
             <div className="space-y-3">
                 <label className="text-xs font-medium text-gray-500">Imagem do Produto</label>
-                <div className="flex flex-col items-center">
-                    <div className="relative w-24 h-24 bg-white rounded border border-gray-300 overflow-hidden flex items-center justify-center group cursor-pointer hover:border-gray-400 transition-colors">
-                        {product.image ? (
-                            <img src={product.image} className="w-full h-full object-contain" alt="Product" />
-                        ) : (
-                            <ImageIcon className="w-8 h-8 text-gray-300" />
-                        )}
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => {
-                                        store.updateProduct(pageId, sectionId, productId, { image: reader.result as string });
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            }}
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                    <div className="flex flex-col items-center w-full gap-2">
+                        <div className="relative w-24 h-24 bg-white rounded border border-gray-300 overflow-hidden flex items-center justify-center group cursor-pointer hover:border-gray-400 transition-colors">
+                            {product.image ? (
+                                <img src={product.image} className="w-full h-full object-contain" alt="Product" />
+                            ) : (
+                                <ImageIcon className="w-8 h-8 text-gray-300" />
+                            )}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                            store.updateProduct(pageId, sectionId, productId, { image: reader.result as string });
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                        </div>
+                        
+                        <div className="w-full">
+                            <input
+                                type="text"
+                                placeholder="Ou cole a URL da imagem aqui"
+                                className="w-full text-[10px] border rounded px-2 py-1 text-center"
+                                value={product.image && product.image.startsWith('http') ? product.image : ''}
+                                onChange={(e) => store.updateProduct(pageId, sectionId, productId, { image: e.target.value })}
+                            />
+                        </div>
                     </div>
-                    <button
-                        type="button"
-                        className="text-[10px] text-blue-600 hover:underline text-center mt-2"
-                        onClick={() => {
-                            const url = window.prompt("URL da imagem:", product.image || '');
-                            if (url !== null) store.updateProduct(pageId, sectionId, productId, { image: url });
-                        }}
-                    >
-                        Link URL
-                    </button>
-                </div>
             </div>
 
             <div className="flex items-center gap-2">
@@ -306,16 +308,36 @@ const ProductForm = ({ productId }: { productId: string }) => {
                     variant="destructive" 
                     size="sm" 
                     className="w-full"
-                    onClick={() => {
-                        if(confirm('Remover produto?')) {
-                            store.removeProduct(pageId, sectionId, productId);
-                            store.selectItem(null, null);
-                        }
-                    }}
+                    onClick={() => setShowDeleteModal(true)}
                 >
                     Remover Produto
                 </Button>
             </div>
+
+            <Modal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                title="Remover Produto"
+                footer={
+                    <>
+                        <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+                            Cancelar
+                        </Button>
+                        <Button 
+                            variant="destructive" 
+                            onClick={() => {
+                                store.removeProduct(pageId, sectionId, productId);
+                                store.selectItem(null, null);
+                                setShowDeleteModal(false);
+                            }}
+                        >
+                            Remover
+                        </Button>
+                    </>
+                }
+            >
+                <p>Tem certeza que deseja remover este produto?</p>
+            </Modal>
         </div>
     );
 };
@@ -330,6 +352,7 @@ interface SortableProductItemProps {
 
 const SortableProductItem = ({ product, index, pageId, sectionId, totalProducts }: SortableProductItemProps) => {
     const store = useCatalogStore();
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const {
         attributes,
         listeners,
@@ -345,96 +368,119 @@ const SortableProductItem = ({ product, index, pageId, sectionId, totalProducts 
     };
 
     return (
-        <div 
-            ref={setNodeRef} 
-            style={style} 
-            className={cn(
-                'flex items-center gap-2 bg-gray-50 p-2 rounded border border-gray-100 group',
-                isDragging && 'opacity-50'
-            )}
-        >
-            <button
-                {...listeners}
-                {...attributes}
-                className="cursor-grab active:cursor-grabbing p-0.5 hover:bg-gray-200 rounded transition-colors"
-                title="Arrastar para reordenar"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                    <circle cx="9" cy="5" r="1"/>
-                    <circle cx="9" cy="12" r="1"/>
-                    <circle cx="9" cy="19" r="1"/>
-                    <circle cx="15" cy="5" r="1"/>
-                    <circle cx="15" cy="12" r="1"/>
-                    <circle cx="15" cy="19" r="1"/>
-                </svg>
-            </button>
-            <div className="w-8 h-8 bg-white rounded border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
-                {product.image ? (
-                    <img src={product.image} className="w-full h-full object-contain" alt="" />
-                ) : (
-                    <ImageIcon className="w-4 h-4 text-gray-300" />
+        <>
+            <div 
+                ref={setNodeRef} 
+                style={style} 
+                className={cn(
+                    'flex items-center gap-2 bg-gray-50 p-2 rounded border border-gray-100 group',
+                    isDragging && 'opacity-50'
                 )}
-            </div>
-            <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-gray-700 truncate">{product.name || 'Sem nome'}</p>
-                <p className="text-[10px] text-gray-400 truncate">{product.sku || 'Sem SKU'}</p>
-            </div>
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="flex flex-col mr-1">
-                    <button
-                        className="p-0.5 hover:bg-gray-200 rounded disabled:opacity-30 disabled:hover:bg-transparent"
-                        disabled={index === 0}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            store.reorderProducts(pageId, sectionId, index, index - 1);
-                        }}
-                        title="Mover para cima"
-                    >
-                        <ArrowUp className="w-3 h-3 text-gray-500" />
-                    </button>
-                    <button
-                        className="p-0.5 hover:bg-gray-200 rounded disabled:opacity-30 disabled:hover:bg-transparent"
-                        disabled={index === totalProducts - 1}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            store.reorderProducts(pageId, sectionId, index, index + 1);
-                        }}
-                        title="Mover para baixo"
-                    >
-                        <ArrowDown className="w-3 h-3 text-gray-500" />
-                    </button>
-                </div>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 hover:bg-white hover:text-blue-600"
-                    onClick={() => store.selectItem('product', product.id)}
-                    title="Editar"
+            >
+                <button
+                    {...listeners}
+                    {...attributes}
+                    className="cursor-grab active:cursor-grabbing p-0.5 hover:bg-gray-200 rounded transition-colors"
+                    title="Arrastar para reordenar"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                        <circle cx="9" cy="5" r="1"/>
+                        <circle cx="9" cy="12" r="1"/>
+                        <circle cx="9" cy="19" r="1"/>
+                        <circle cx="15" cy="5" r="1"/>
+                        <circle cx="15" cy="12" r="1"/>
+                        <circle cx="15" cy="19" r="1"/>
                     </svg>
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 w-6 p-0 hover:bg-white hover:text-red-600"
-                    onClick={() => {
-                        if(confirm('Remover produto?')) {
-                            store.removeProduct(pageId, sectionId, product.id);
-                        }
-                    }}
-                    title="Remover"
-                >
-                    <Trash2 className="w-3 h-3" />
-                </Button>
+                </button>
+                <div className="w-8 h-8 bg-white rounded border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    {product.image ? (
+                        <img src={product.image} className="w-full h-full object-contain" alt="" />
+                    ) : (
+                        <ImageIcon className="w-4 h-4 text-gray-300" />
+                    )}
+                </div>
+                <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-gray-700 truncate">{product.name || 'Sem nome'}</p>
+                    <p className="text-[10px] text-gray-400 truncate">{product.sku || 'Sem SKU'}</p>
+                </div>
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex flex-col mr-1">
+                        <button
+                            className="p-0.5 hover:bg-gray-200 rounded disabled:opacity-30 disabled:hover:bg-transparent"
+                            disabled={index === 0}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                store.reorderProducts(pageId, sectionId, index, index - 1);
+                            }}
+                            title="Mover para cima"
+                        >
+                            <ArrowUp className="w-3 h-3 text-gray-500" />
+                        </button>
+                        <button
+                            className="p-0.5 hover:bg-gray-200 rounded disabled:opacity-30 disabled:hover:bg-transparent"
+                            disabled={index === totalProducts - 1}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                store.reorderProducts(pageId, sectionId, index, index + 1);
+                            }}
+                            title="Mover para baixo"
+                        >
+                            <ArrowDown className="w-3 h-3 text-gray-500" />
+                        </button>
+                    </div>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 hover:bg-white hover:text-blue-600"
+                        onClick={() => store.selectItem('product', product.id)}
+                        title="Editar"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                        </svg>
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 hover:bg-white hover:text-red-600"
+                        onClick={() => setShowDeleteModal(true)}
+                        title="Remover"
+                    >
+                        <Trash2 className="w-3 h-3" />
+                    </Button>
+                </div>
             </div>
-        </div>
+
+            <Modal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                title="Remover Produto"
+                footer={
+                    <>
+                        <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+                            Cancelar
+                        </Button>
+                        <Button 
+                            variant="destructive" 
+                            onClick={() => {
+                                store.removeProduct(pageId, sectionId, product.id);
+                                setShowDeleteModal(false);
+                            }}
+                        >
+                            Remover
+                        </Button>
+                    </>
+                }
+            >
+                <p>Tem certeza que deseja remover este produto?</p>
+            </Modal>
+        </>
     );
 };
 
 const SectionForm = ({ sectionId }: { sectionId: string }) => {
      const store = useCatalogStore();
+     const [showDeleteModal, setShowDeleteModal] = useState(false);
     // Helper to find section
     let section: any = null;
     let pageId = '';
@@ -565,16 +611,36 @@ const SectionForm = ({ sectionId }: { sectionId: string }) => {
                     variant="destructive" 
                     size="sm" 
                     className="w-full"
-                    onClick={() => {
-                        if(confirm('Remover seção?')) {
-                            store.removeSection(pageId, sectionId);
-                            store.selectItem(null, null);
-                        }
-                    }}
+                    onClick={() => setShowDeleteModal(true)}
                 >
                     Remover Seção
                 </Button>
             </div>
+
+            <Modal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                title="Remover Seção"
+                footer={
+                    <>
+                        <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+                            Cancelar
+                        </Button>
+                        <Button 
+                            variant="destructive" 
+                            onClick={() => {
+                                store.removeSection(pageId, sectionId);
+                                store.selectItem(null, null);
+                                setShowDeleteModal(false);
+                            }}
+                        >
+                            Remover
+                        </Button>
+                    </>
+                }
+            >
+                <p>Tem certeza que deseja remover esta seção? Todos os produtos nela serão perdidos.</p>
+            </Modal>
 
         </div>
     );
@@ -582,6 +648,7 @@ const SectionForm = ({ sectionId }: { sectionId: string }) => {
 
 const PageForm = ({ pageId }: { pageId: string }) => {
      const store = useCatalogStore();
+     const [showDeleteModal, setShowDeleteModal] = useState(false);
      const pageIndex = store.pages.findIndex(p => p.id === pageId);
 
      if (pageIndex === -1) return <div className="p-4 text-gray-500 text-sm">Página não encontrada.</div>;
@@ -613,16 +680,36 @@ const PageForm = ({ pageId }: { pageId: string }) => {
                     variant="destructive" 
                     size="sm" 
                     className="w-full"
-                    onClick={() => {
-                        if(confirm('Remover página?')) {
-                            store.removePage(pageId);
-                            store.selectItem(null, null);
-                        }
-                    }}
+                    onClick={() => setShowDeleteModal(true)}
                 >
                     Remover Página
                 </Button>
             </div>
+
+            <Modal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                title="Remover Página"
+                footer={
+                    <>
+                        <Button variant="outline" onClick={() => setShowDeleteModal(false)}>
+                            Cancelar
+                        </Button>
+                        <Button 
+                            variant="destructive" 
+                            onClick={() => {
+                                store.removePage(pageId);
+                                store.selectItem(null, null);
+                                setShowDeleteModal(false);
+                            }}
+                        >
+                            Remover
+                        </Button>
+                    </>
+                }
+            >
+                <p>Tem certeza que deseja remover esta página? Todo o conteúdo dela será perdido.</p>
+            </Modal>
         </div>
     );
 }
