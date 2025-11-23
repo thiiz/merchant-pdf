@@ -53,6 +53,8 @@ export const InteractiveProduct: React.FC<InteractiveProductProps> = ({
         'relative h-full transition-all',
         isDragging && 'opacity-30'
       )}
+      data-product-id={product.id}
+      data-section-id={sectionId}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

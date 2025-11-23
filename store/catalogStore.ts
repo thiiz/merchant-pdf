@@ -16,6 +16,7 @@ interface CatalogStore extends CatalogState {
   reorderSection: (pageId: string, sectionId: string, direction: 'up' | 'down') => void;
   reorderProducts: (pageId: string, sectionId: string, oldIndex: number, newIndex: number) => void;
   moveProduct: (sourcePageId: string, sourceSectionId: string, targetPageId: string, targetSectionId: string, productId: string, newIndex: number) => void;
+  moveProductToNextPage: (sourcePageId: string, sourceSectionId: string, productId: string) => void;
   importCatalog: (state: CatalogState) => void;
   
   // Selection State
@@ -314,6 +315,73 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
       pages: state.pages,
       globalSettings: state.globalSettings,
     })),
+
+  moveProductToNextPage: (sourcePageId, sourceSectionId, productId) =>
+    set((state) => {
+      const newPages = JSON.parse(JSON.stringify(state.pages));
+      
+      // Find source
+      const sourcePageIndex = newPages.findIndex((p: any) => p.id === sourcePageId);
+      if (sourcePageIndex === -1) return state;
+      
+      const sourceSectionIndex = newPages[sourcePageIndex].sections.findIndex((s: any) => s.id === sourceSectionId);
+      if (sourceSectionIndex === -1) return state;
+      
+      // Get product
+      const sourceProducts = newPages[sourcePageIndex].sections[sourceSectionIndex].products || [];
+      const productIndex = sourceProducts.findIndex((p: any) => p.id === productId);
+      if (productIndex === -1) return state;
+      
+      const [movedProduct] = sourceProducts.splice(productIndex, 1);
+      
+      // Determine target page
+      let targetPageIndex = sourcePageIndex + 1;
+      
+      // Create new page if it doesn't exist
+      if (targetPageIndex >= newPages.length) {
+        newPages.push({
+          id: `page-${Date.now()}`,
+          sections: [
+            {
+              id: `sec-${Date.now()}-1`,
+              type: 'product-grid',
+              columns: 3,
+              products: [],
+            },
+            {
+              id: `sec-${Date.now()}-2`,
+              type: 'product-grid',
+              columns: 3,
+              products: [],
+            },
+            {
+              id: `sec-${Date.now()}-3`,
+              type: 'product-grid',
+              columns: 3,
+              products: [],
+            },
+          ],
+        });
+      }
+      
+      // Find first product-grid section in target page
+      const targetPage = newPages[targetPageIndex];
+      const targetSectionIndex = targetPage.sections.findIndex((s: any) => s.type === 'product-grid');
+      
+      if (targetSectionIndex !== -1) {
+        if (!targetPage.sections[targetSectionIndex].products) {
+          targetPage.sections[targetSectionIndex].products = [];
+        }
+        // Add to the beginning of the target section
+        targetPage.sections[targetSectionIndex].products.unshift(movedProduct);
+      } else {
+        // Fallback: if no product grid exists (unlikely with new structure), put it back or handle error
+        // For now, just return state to avoid losing product
+        return state;
+      }
+      
+      return { pages: newPages };
+    }),
 
   selectedId: null,
   selectedType: null,

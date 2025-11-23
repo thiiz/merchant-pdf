@@ -17,7 +17,7 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
   const currentDate = new Date().toLocaleDateString('pt-BR');
 
   return (
-    <div className="w-[210mm] h-[297mm] bg-white shadow-lg mx-auto relative flex flex-col overflow-hidden print:shadow-none print:m-0 print:w-full print:h-full">
+    <div id={`page-${page.id}`} className="w-[210mm] h-[297mm] bg-white shadow-lg mx-auto relative flex flex-col overflow-hidden print:shadow-none print:m-0 print:w-full print:h-full">
       {/* Content Area */}
       <div
         className="flex-grow flex flex-col"
@@ -118,17 +118,16 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
                           
                           {/* Add Product Button */}
                           {(() => {
-                            const maxProducts = {
-                              2: 4,
-                              3: 6,
-                              4: 8
-                            }[section.columns || 3] || 6;
+                            // Limit increased to allow filling the page visually
+                            // The user will see when it overflows via the page boundary
+                            const maxProducts = 24;
                             
                             const currentCount = section.products?.length || 0;
                             
                             if (currentCount < maxProducts) {
                               return (
                                 <button
+                                  data-overflow-target="button"
                                   className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-400 hover:bg-blue-50 transition-all group h-full min-h-[150px]"
                                   onClick={() => {
                                     const { addProduct } = useCatalogStore.getState();
@@ -194,6 +193,81 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
           Página {page.id.split('-')[1]}
         </p>
       </div>
+
+      {/* Overflow Detection Logic */}
+      <OverflowDetector pageId={page.id} />
     </div>
   );
+};
+
+// Helper component to handle overflow detection
+const OverflowDetector = ({ pageId }: { pageId: string }) => {
+  const { moveProductToNextPage } = useCatalogStore();
+
+  React.useEffect(() => {
+    const checkOverflow = () => {
+      // Find the page container
+      const pageElement = document.getElementById(`page-${pageId}`);
+      if (!pageElement) return;
+
+      const pageRect = pageElement.getBoundingClientRect();
+      const pageBottom = pageRect.bottom;
+
+      // 1. Check Products (Move to next page)
+      const productElements = pageElement.querySelectorAll('[data-product-id]');
+
+      for (const el of productElements) {
+        const rect = el.getBoundingClientRect();
+        if (rect.bottom > pageBottom - 10) {
+          const productId = el.getAttribute('data-product-id');
+          const sectionId = el.getAttribute('data-section-id');
+          
+          if (productId && sectionId) {
+            setTimeout(() => {
+              moveProductToNextPage(pageId, sectionId, productId);
+            }, 0);
+            return; 
+          }
+        }
+      }
+
+      // 2. Check Add Buttons (Hide if overflowing)
+      const buttonElements = pageElement.querySelectorAll('[data-overflow-target="button"]');
+      for (const el of buttonElements) {
+        const rect = el.getBoundingClientRect();
+        const htmlEl = el as HTMLElement;
+        
+        // Check if button is overflowing
+        if (rect.bottom > pageBottom - 10) {
+           if (htmlEl.style.visibility !== 'hidden') {
+             htmlEl.style.visibility = 'hidden';
+           }
+        } else {
+           if (htmlEl.style.visibility === 'hidden') {
+             htmlEl.style.visibility = 'visible';
+           }
+        }
+      }
+    };
+
+    // Run check after render and when content changes
+    const pageElement = document.getElementById(`page-${pageId}`);
+    if (!pageElement) return;
+
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(pageElement);
+    
+    const mutationObserver = new MutationObserver(checkOverflow);
+    mutationObserver.observe(pageElement, { childList: true, subtree: true, attributes: true });
+
+    const timeout = setTimeout(checkOverflow, 500);
+
+    return () => {
+      observer.disconnect();
+      mutationObserver.disconnect();
+      clearTimeout(timeout);
+    };
+  }, [pageId, moveProductToNextPage]);
+
+  return null;
 };
