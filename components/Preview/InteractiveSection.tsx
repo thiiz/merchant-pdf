@@ -60,6 +60,10 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={(e) => {
+        e.stopPropagation();
+        useCatalogStore.getState().selectItem('section', section.id);
+      }}
     >
       {/* Interactive Controls (appear on hover) */}
 

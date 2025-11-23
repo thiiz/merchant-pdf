@@ -572,6 +572,24 @@ const PageForm = ({ pageId }: { pageId: string }) => {
         <div className="space-y-4">
             <h3 className="font-medium text-sm text-gray-900 border-b pb-2">Editar Página {pageIndex + 1}</h3>
             
+            <div className="space-y-3">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                        store.addSection(pageId, {
+                            id: `sec-${Date.now()}`,
+                            type: 'header',
+                            title: 'NOVO TÍTULO'
+                        });
+                    }}
+                >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Adicionar Cabeçalho
+                </Button>
+            </div>
+
              <div className="pt-4">
                 <Button 
                     variant="destructive" 
