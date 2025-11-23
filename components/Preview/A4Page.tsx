@@ -115,6 +115,48 @@ export const A4Page: React.FC<A4PageProps> = ({ page }) => {
                               sectionId={section.id}
                             />
                           ))}
+                          
+                          {/* Add Product Button */}
+                          {(() => {
+                            const maxProducts = {
+                              2: 4,
+                              3: 6,
+                              4: 8
+                            }[section.columns || 3] || 6;
+                            
+                            const currentCount = section.products?.length || 0;
+                            
+                            if (currentCount < maxProducts) {
+                              return (
+                                <button
+                                  className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-400 hover:bg-blue-50 transition-all group h-full min-h-[150px]"
+                                  onClick={() => {
+                                    const { addProduct } = useCatalogStore.getState();
+                                    addProduct(page.id, section.id, {
+                                      id: `prod-${Date.now()}`,
+                                      name: 'Novo Produto',
+                                      retailPrice: 0,
+                                      wholesalePrice: 0,
+                                      dropPrice: 0,
+                                      soldOut: false,
+                                      piecesPerBox: 1,
+                                    });
+                                  }}
+                                >
+                                  <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-blue-100 transition-colors mb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 group-hover:text-blue-500">
+                                      <path d="M5 12h14" />
+                                      <path d="M12 5v14" />
+                                    </svg>
+                                  </div>
+                                  <span className="text-xs font-medium text-gray-400 group-hover:text-blue-600">
+                                    Adicionar Produto
+                                  </span>
+                                </button>
+                              );
+                            }
+                            return null;
+                          })()}
                         </div>
                       </SortableContext>
                     </div>

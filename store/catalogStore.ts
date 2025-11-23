@@ -84,7 +84,26 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
         ...state.pages,
         {
           id: pageId || `page-${Date.now()}`,
-          sections: [],
+          sections: [
+            {
+              id: `sec-${Date.now()}-1`,
+              type: 'product-grid',
+              columns: 3,
+              products: [],
+            },
+            {
+              id: `sec-${Date.now()}-2`,
+              type: 'product-grid',
+              columns: 3,
+              products: [],
+            },
+            {
+              id: `sec-${Date.now()}-3`,
+              type: 'product-grid',
+              columns: 3,
+              products: [],
+            },
+          ],
         },
       ],
     })),

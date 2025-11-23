@@ -116,16 +116,7 @@ const SortablePageItem = ({
               <span className="truncate flex-1">{section.title || (section.type === 'header' ? 'Título' : 'Grade de Produtos')}</span>
             </div>
           ))}
-          <div className="pt-1">
-             <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start text-[10px] h-6 text-gray-400 hover:text-gray-600 px-2"
-              onClick={onAddSection}
-             >
-               <Plus className="w-3 h-3 mr-1" /> Add Seção
-             </Button>
-          </div>
+
         </div>
       )}
     </div>

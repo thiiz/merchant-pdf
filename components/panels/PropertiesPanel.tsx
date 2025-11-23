@@ -356,21 +356,82 @@ const SectionForm = ({ sectionId }: { sectionId: string }) => {
                 </div>
             )}
 
-             <div className="pt-4">
-                <Button 
-                    variant="destructive" 
-                    size="sm" 
-                    className="w-full"
-                    onClick={() => {
-                        if(confirm('Remover seção?')) {
-                            store.removeSection(pageId, sectionId);
-                            store.selectItem(null, null);
-                        }
-                    }}
-                >
-                    Remover Seção
-                </Button>
-            </div>
+            {section.type === 'product-grid' && (
+                <div className="space-y-3 pt-2 border-t border-gray-100">
+                    <div className="flex items-center justify-between">
+                        <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">Produtos ({section.products?.length || 0})</label>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 w-6 p-0"
+                            onClick={() => {
+                                store.addProduct(pageId, sectionId, {
+                                    id: `prod-${Date.now()}`,
+                                    name: 'Novo Produto',
+                                    retailPrice: 0,
+                                    wholesalePrice: 0,
+                                    dropPrice: 0,
+                                    soldOut: false,
+                                    piecesPerBox: 1,
+                                });
+                            }}
+                        >
+                            <Plus className="w-4 h-4" />
+                        </Button>
+                    </div>
+
+                    <div className="space-y-2">
+                        {section.products?.map((product: any, index: number) => (
+                            <div key={product.id} className="flex items-center gap-2 bg-gray-50 p-2 rounded border border-gray-100 group">
+                                <div className="w-8 h-8 bg-white rounded border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                    {product.image ? (
+                                        <img src={product.image} className="w-full h-full object-contain" alt="" />
+                                    ) : (
+                                        <ImageIcon className="w-4 h-4 text-gray-300" />
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium text-gray-700 truncate">{product.name || 'Sem nome'}</p>
+                                    <p className="text-[10px] text-gray-400 truncate">{product.sku || 'Sem SKU'}</p>
+                                </div>
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0 hover:bg-white hover:text-blue-600"
+                                        onClick={() => store.selectItem('product', product.id)}
+                                        title="Editar"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                        </svg>
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0 hover:bg-white hover:text-red-600"
+                                        onClick={() => {
+                                            if(confirm('Remover produto?')) {
+                                                store.removeProduct(pageId, sectionId, product.id);
+                                            }
+                                        }}
+                                        title="Remover"
+                                    >
+                                        <Trash2 className="w-3 h-3" />
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                        
+                        {(!section.products || section.products.length === 0) && (
+                            <div className="text-center py-4 text-gray-400 text-xs italic">
+                                Nenhum produto nesta seção
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }
