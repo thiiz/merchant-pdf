@@ -31,7 +31,14 @@ export const InteractiveSection: React.FC<InteractiveSectionProps> = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: section.id });
+  } = useSortable({ 
+    id: section.id,
+    data: {
+      type: 'section',
+      section,
+      pageId
+    }
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),

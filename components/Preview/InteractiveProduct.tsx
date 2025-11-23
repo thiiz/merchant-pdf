@@ -33,7 +33,15 @@ export const InteractiveProduct: React.FC<InteractiveProductProps> = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: product.id });
+  } = useSortable({ 
+    id: product.id,
+    data: {
+      type: 'product',
+      product,
+      pageId,
+      sectionId
+    }
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
