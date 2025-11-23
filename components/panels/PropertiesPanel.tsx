@@ -3,9 +3,20 @@
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { useCatalogStore } from '@/store/catalogStore';
-import { ImageIcon, Plus, Trash2, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, ImageIcon, Plus, Trash2, X } from 'lucide-react';
 
 // Placeholder sub-components (will be implemented fully in next steps)
+import {
+    closestCenter,
+    DndContext,
+    DragEndEvent,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors
+} from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { useState } from 'react';
 import { CatalogStateExport } from './data/CatalogStateExport';
 import { CatalogStateImport } from './data/CatalogStateImport';
@@ -309,6 +320,119 @@ const ProductForm = ({ productId }: { productId: string }) => {
     );
 };
 
+interface SortableProductItemProps {
+    product: any;
+    index: number;
+    pageId: string;
+    sectionId: string;
+    totalProducts: number;
+}
+
+const SortableProductItem = ({ product, index, pageId, sectionId, totalProducts }: SortableProductItemProps) => {
+    const store = useCatalogStore();
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: product.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <div 
+            ref={setNodeRef} 
+            style={style} 
+            className={cn(
+                'flex items-center gap-2 bg-gray-50 p-2 rounded border border-gray-100 group',
+                isDragging && 'opacity-50'
+            )}
+        >
+            <button
+                {...listeners}
+                {...attributes}
+                className="cursor-grab active:cursor-grabbing p-0.5 hover:bg-gray-200 rounded transition-colors"
+                title="Arrastar para reordenar"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                    <circle cx="9" cy="5" r="1"/>
+                    <circle cx="9" cy="12" r="1"/>
+                    <circle cx="9" cy="19" r="1"/>
+                    <circle cx="15" cy="5" r="1"/>
+                    <circle cx="15" cy="12" r="1"/>
+                    <circle cx="15" cy="19" r="1"/>
+                </svg>
+            </button>
+            <div className="w-8 h-8 bg-white rounded border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                {product.image ? (
+                    <img src={product.image} className="w-full h-full object-contain" alt="" />
+                ) : (
+                    <ImageIcon className="w-4 h-4 text-gray-300" />
+                )}
+            </div>
+            <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-gray-700 truncate">{product.name || 'Sem nome'}</p>
+                <p className="text-[10px] text-gray-400 truncate">{product.sku || 'Sem SKU'}</p>
+            </div>
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex flex-col mr-1">
+                    <button
+                        className="p-0.5 hover:bg-gray-200 rounded disabled:opacity-30 disabled:hover:bg-transparent"
+                        disabled={index === 0}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            store.reorderProducts(pageId, sectionId, index, index - 1);
+                        }}
+                        title="Mover para cima"
+                    >
+                        <ArrowUp className="w-3 h-3 text-gray-500" />
+                    </button>
+                    <button
+                        className="p-0.5 hover:bg-gray-200 rounded disabled:opacity-30 disabled:hover:bg-transparent"
+                        disabled={index === totalProducts - 1}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            store.reorderProducts(pageId, sectionId, index, index + 1);
+                        }}
+                        title="Mover para baixo"
+                    >
+                        <ArrowDown className="w-3 h-3 text-gray-500" />
+                    </button>
+                </div>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0 hover:bg-white hover:text-blue-600"
+                    onClick={() => store.selectItem('product', product.id)}
+                    title="Editar"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                    </svg>
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 p-0 hover:bg-white hover:text-red-600"
+                    onClick={() => {
+                        if(confirm('Remover produto?')) {
+                            store.removeProduct(pageId, sectionId, product.id);
+                        }
+                    }}
+                    title="Remover"
+                >
+                    <Trash2 className="w-3 h-3" />
+                </Button>
+            </div>
+        </div>
+    );
+};
+
 const SectionForm = ({ sectionId }: { sectionId: string }) => {
      const store = useCatalogStore();
     // Helper to find section
@@ -325,6 +449,28 @@ const SectionForm = ({ sectionId }: { sectionId: string }) => {
     }
 
     if (!section) return <div className="p-4 text-gray-500 text-sm">Seção não encontrada.</div>;
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
+        useSensor(KeyboardSensor)
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = section.products?.findIndex((p: any) => p.id === active.id);
+        const newIndex = section.products?.findIndex((p: any) => p.id === over.id);
+
+        if (oldIndex !== undefined && newIndex !== undefined && oldIndex !== -1 && newIndex !== -1) {
+            store.reorderProducts(pageId, sectionId, oldIndex, newIndex);
+        }
+    };
 
     return (
         <div className="space-y-4">
@@ -380,55 +526,35 @@ const SectionForm = ({ sectionId }: { sectionId: string }) => {
                         </Button>
                     </div>
 
-                    <div className="space-y-2">
-                        {section.products?.map((product: any, index: number) => (
-                            <div key={product.id} className="flex items-center gap-2 bg-gray-50 p-2 rounded border border-gray-100 group">
-                                <div className="w-8 h-8 bg-white rounded border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
-                                    {product.image ? (
-                                        <img src={product.image} className="w-full h-full object-contain" alt="" />
-                                    ) : (
-                                        <ImageIcon className="w-4 h-4 text-gray-300" />
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-medium text-gray-700 truncate">{product.name || 'Sem nome'}</p>
-                                    <p className="text-[10px] text-gray-400 truncate">{product.sku || 'Sem SKU'}</p>
-                                </div>
-                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-6 w-6 p-0 hover:bg-white hover:text-blue-600"
-                                        onClick={() => store.selectItem('product', product.id)}
-                                        title="Editar"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                                        </svg>
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-6 w-6 p-0 hover:bg-white hover:text-red-600"
-                                        onClick={() => {
-                                            if(confirm('Remover produto?')) {
-                                                store.removeProduct(pageId, sectionId, product.id);
-                                            }
-                                        }}
-                                        title="Remover"
-                                    >
-                                        <Trash2 className="w-3 h-3" />
-                                    </Button>
-                                </div>
+                    <DndContext 
+                        sensors={sensors} 
+                        collisionDetection={closestCenter} 
+                        onDragEnd={handleDragEnd}
+                    >
+                        <SortableContext
+                            items={section.products?.map((p: any) => p.id) || []}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            <div className="space-y-2">
+                                {section.products?.map((product: any, index: number) => (
+                                    <SortableProductItem 
+                                        key={product.id} 
+                                        product={product} 
+                                        index={index} 
+                                        pageId={pageId} 
+                                        sectionId={sectionId}
+                                        totalProducts={section.products?.length || 0}
+                                    />
+                                ))}
+                                
+                                {(!section.products || section.products.length === 0) && (
+                                    <div className="text-center py-4 text-gray-400 text-xs italic">
+                                        Nenhum produto nesta seção
+                                    </div>
+                                )}
                             </div>
-                        ))}
-                        
-                        {(!section.products || section.products.length === 0) && (
-                            <div className="text-center py-4 text-gray-400 text-xs italic">
-                                Nenhum produto nesta seção
-                            </div>
-                        )}
-                    </div>
+                        </SortableContext>
+                    </DndContext>
                 </div>
             )}
 
