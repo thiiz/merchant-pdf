@@ -92,18 +92,6 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
               columns: 3,
               products: [],
             },
-            {
-              id: `sec-${Date.now()}-2`,
-              type: 'product-grid',
-              columns: 3,
-              products: [],
-            },
-            {
-              id: `sec-${Date.now()}-3`,
-              type: 'product-grid',
-              columns: 3,
-              products: [],
-            },
           ],
         },
       ],
@@ -344,18 +332,6 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
           sections: [
             {
               id: `sec-${Date.now()}-1`,
-              type: 'product-grid',
-              columns: 3,
-              products: [],
-            },
-            {
-              id: `sec-${Date.now()}-2`,
-              type: 'product-grid',
-              columns: 3,
-              products: [],
-            },
-            {
-              id: `sec-${Date.now()}-3`,
               type: 'product-grid',
               columns: 3,
               products: [],
