@@ -37,7 +37,13 @@ export interface GlobalSettings {
   showDate: boolean;
 }
 
+export interface CoverPage {
+  enabled: boolean;
+  imageUrl: string;
+}
+
 export interface CatalogState {
+  coverPage?: CoverPage;
   pages: Page[];
   globalSettings: GlobalSettings;
 }

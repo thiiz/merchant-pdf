@@ -70,7 +70,70 @@ const GlobalSettingsForm = () => {
                             />
                         </div>
                     </div>
-                     <div className="space-y-3">
+
+                    <div className="space-y-3 pt-4 border-t border-gray-100">
+                        <div className="flex items-center justify-between">
+                            <label className="text-xs font-medium text-gray-500">Capa do Catálogo</label>
+                            <input 
+                                type="checkbox" 
+                                checked={store.coverPage?.enabled || false}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        store.setCoverPage({ enabled: true });
+                                    } else {
+                                        store.removeCoverPage();
+                                    }
+                                }}
+                                className="w-4 h-4 rounded border-gray-300"
+                            />
+                        </div>
+                        
+                        {store.coverPage?.enabled && (
+                            <div className="space-y-2">
+                                <div className="flex flex-col items-center w-full gap-2">
+                                    <div className="relative w-full aspect-210/297 bg-gray-50 rounded border border-gray-300 overflow-hidden flex items-center justify-center group cursor-pointer hover:border-gray-400 transition-colors">
+                                        {store.coverPage.imageUrl ? (
+                                            <img src={store.coverPage.imageUrl} className="w-full h-full object-cover" alt="Capa" />
+                                        ) : (
+                                            <div className="flex flex-col items-center text-gray-400">
+                                                <ImageIcon className="w-6 h-6 mb-1" />
+                                                <span className="text-[10px]">Adicionar Capa</span>
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onloadend = () => {
+                                                        store.setCoverPage({ imageUrl: reader.result as string });
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                                    </div>
+                                    
+                                    {store.coverPage.imageUrl && (
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            className="w-full text-xs h-7"
+                                            onClick={() => store.setCoverPage({ imageUrl: '' })}
+                                        >
+                                            <Trash2 className="w-3 h-3 mr-1" /> Remover Imagem
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                     <div className="space-y-3 pt-4 border-t border-gray-100">
                         <label className="text-xs font-medium text-gray-500">Texto do Rodapé</label>
                         <input 
                             type="text" 
@@ -392,7 +455,7 @@ const SortableProductItem = ({ product, index, pageId, sectionId, totalProducts 
                         <circle cx="15" cy="19" r="1"/>
                     </svg>
                 </button>
-                <div className="w-8 h-8 bg-white rounded border border-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                <div className="w-8 h-8 bg-white rounded border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
                     {product.image ? (
                         <img src={product.image} className="w-full h-full object-contain" alt="" />
                     ) : (

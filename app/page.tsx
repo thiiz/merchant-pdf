@@ -4,6 +4,7 @@ import { EditorLayout } from '@/components/layouts/EditorLayout';
 import { PropertiesPanel } from '@/components/panels/PropertiesPanel';
 import { StructurePanel } from '@/components/panels/StructurePanel';
 import { PDFDownloadButton } from '@/components/PDF/PDFDownloadButton';
+import { CoverPagePreview } from '@/components/Preview/CoverPagePreview';
 import { InteractivePage } from '@/components/Preview/InteractivePage';
 import { useCatalogStore } from '@/store/catalogStore';
 import {
@@ -128,6 +129,11 @@ export default function Home() {
               onDragEnd={handleDragEnd}
             >
               <div className="flex flex-col gap-8 print:gap-0">
+                {/* Cover Page */}
+                {useCatalogStore(state => state.coverPage?.enabled) && (
+                  <CoverPagePreview />
+                )}
+
                 {pages.map((page, index) => (
                   <InteractivePage key={page.id} page={page} index={index} />
                 ))}

@@ -220,6 +220,16 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
 
   return (
     <Document>
+      {/* Cover Page */}
+      {state.coverPage?.enabled && state.coverPage.imageUrl && (
+        <Page size="A4" style={{ padding: 0 }}>
+          <Image 
+            src={state.coverPage.imageUrl} 
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </Page>
+      )}
+
       {pages.map((page, pageIndex) => (
         <Page key={page.id} size="A4" style={styles.page}>
           <View style={styles.contentContainer}>

@@ -1,4 +1,4 @@
-import { CatalogState, GlobalSettings, Product, Section } from '@/types/catalog';
+import { CatalogState, CoverPage, GlobalSettings, Product, Section } from '@/types/catalog';
 import { create } from 'zustand';
 
 interface CatalogStore extends CatalogState {
@@ -19,6 +19,10 @@ interface CatalogStore extends CatalogState {
   moveProductToNextPage: (sourcePageId: string, sourceSectionId: string, productId: string) => void;
   importCatalog: (state: CatalogState) => void;
   
+  // Cover Page
+  setCoverPage: (cover: Partial<CoverPage>) => void;
+  removeCoverPage: () => void;
+  
   // Selection State
   selectedId: string | null;
   selectedType: 'page' | 'section' | 'product' | 'global' | null;
@@ -26,6 +30,10 @@ interface CatalogStore extends CatalogState {
 }
 
 export const useCatalogStore = create<CatalogStore>((set) => ({
+  coverPage: {
+    enabled: false,
+    imageUrl: '',
+  },
   globalSettings: {
     primaryColor: '#00AEEF',
     logoUrl: '',
@@ -302,6 +310,7 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
     set(() => ({
       pages: state.pages,
       globalSettings: state.globalSettings,
+      coverPage: state.coverPage,
     })),
 
   moveProductToNextPage: (sourcePageId, sourceSectionId, productId) =>
@@ -358,6 +367,17 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
       
       return { pages: newPages };
     }),
+
+  // Cover Page Actions
+  setCoverPage: (cover) =>
+    set((state) => ({
+      coverPage: { ...state.coverPage, ...cover } as CoverPage,
+    })),
+
+  removeCoverPage: () =>
+    set(() => ({
+      coverPage: { enabled: false, imageUrl: '' },
+    })),
 
   selectedId: null,
   selectedType: null,
