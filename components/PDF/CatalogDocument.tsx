@@ -151,9 +151,9 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: DESIGN_TOKENS.components.productCard.name.fontSize.pt,
     fontWeight: 'bold',
+    color: DESIGN_TOKENS.colors.gray[900],
+    lineHeight: 1.25,
     marginBottom: DESIGN_TOKENS.components.productCard.name.marginBottom.pt,
-    height: DESIGN_TOKENS.components.productCard.name.lineHeight.pt, // Fixed height for 2 lines
-    overflow: 'hidden',
   },
   specsList: {
     marginBottom: DESIGN_TOKENS.components.productCard.price.marginTop.pt,
@@ -294,7 +294,8 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
 
                             <View style={styles.productContent}>
                               <View>
-                                <Text style={styles.productName}>{product.name}</Text>
+                                {/* @ts-ignore */}
+                                <Text style={styles.productName} maxLines={2} hyphenationCallback={(word) => [word]}>{product.name}</Text>
                                 {product.sku && (
                                   <Text style={{ fontSize: 7, color: DESIGN_TOKENS.colors.gray[500], textTransform: 'uppercase', marginTop: 2 }}>
                                     {product.sku}
