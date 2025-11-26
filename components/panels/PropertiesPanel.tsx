@@ -142,6 +142,18 @@ const GlobalSettingsForm = () => {
                             className="w-full text-xs border rounded px-2 py-1.5"
                         />
                     </div>
+
+                     <div className="space-y-3 pt-4 border-t border-gray-100">
+                        <div className="flex items-center justify-between">
+                            <label className="text-xs font-medium text-gray-500">Mostrar Peças por Caixa</label>
+                            <input 
+                                type="checkbox" 
+                                checked={store.globalSettings.showPiecesPerBox ?? true}
+                                onChange={(e) => store.setGlobalSettings({ showPiecesPerBox: e.target.checked })}
+                                className="w-4 h-4 rounded border-gray-300"
+                            />
+                        </div>
+                    </div>
                 </div>
             ) : (
                 <div className="space-y-6 pt-2">

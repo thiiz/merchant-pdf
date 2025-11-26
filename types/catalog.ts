@@ -35,6 +35,7 @@ export interface GlobalSettings {
   headerTitle: string;
   headerSubtitle: string;
   showDate: boolean;
+  showPiecesPerBox: boolean;
 }
 
 export interface CoverPage {

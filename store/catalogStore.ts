@@ -43,6 +43,7 @@ export const useCatalogStore = create<CatalogStore>((set) => ({
     headerTitle: 'Catálogo de Produtos',
     headerSubtitle: 'Ofertas Especiais',
     showDate: true,
+    showPiecesPerBox: true,
   },
   pages: [
     {

@@ -316,9 +316,11 @@ export const CatalogDocument: React.FC<CatalogDocumentProps> = ({ state }) => {
                               )}
 
                               <View style={[styles.priceContainer, { flexDirection: 'column', alignItems: 'stretch', gap: 4 }]}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
-                                  <Text style={[styles.specText, { fontSize: 8, color: DESIGN_TOKENS.colors.gray[600], textTransform: 'uppercase' }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
-                                </View>
+                                {globalSettings.showPiecesPerBox && (
+                                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
+                                    <Text style={[styles.specText, { fontSize: 8, color: DESIGN_TOKENS.colors.gray[600], textTransform: 'uppercase' }]}>PCS/CX: {product.piecesPerBox || 1}</Text>
+                                  </View>
+                                )}
 
                                 {/* Varejo */}
                                 {product.retailPrice > 0 && (

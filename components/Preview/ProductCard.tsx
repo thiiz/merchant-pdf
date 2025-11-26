@@ -163,11 +163,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, pageId, secti
             marginTop: `${DESIGN_TOKENS.components.productCard.price.marginTop.px}px`
           }}
         >
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-gray-500 text-[10px] font-medium uppercase tracking-wider">
-              PCS/CX: {product.piecesPerBox || 1}
-            </span>
-          </div>
+          {globalSettings.showPiecesPerBox && (
+            <div className="flex justify-between items-center mb-1">
+              <span className="text-gray-500 text-[10px] font-medium uppercase tracking-wider">
+                PCS/CX: {product.piecesPerBox || 1}
+              </span>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 gap-1">
             {/* Varejo */}
