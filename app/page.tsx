@@ -6,22 +6,34 @@ import { StructurePanel } from '@/components/panels/StructurePanel';
 import { PDFDownloadButton } from '@/components/PDF/PDFDownloadButton';
 import { CoverPagePreview } from '@/components/Preview/CoverPagePreview';
 import { InteractivePage } from '@/components/Preview/InteractivePage';
+import { Button } from '@/components/ui/Button';
 import { useCatalogStore } from '@/store/catalogStore';
 import {
-  closestCenter,
-  DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors
+    closestCenter,
+    DndContext,
+    DragEndEvent,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { Redo2, Undo2 } from 'lucide-react';
 
 import { useEffect } from 'react';
 
 export default function Home() {
-  const { pages, reorderProducts, moveProduct, selectedId, selectedType } = useCatalogStore();
+  const { 
+    pages, 
+    reorderProducts, 
+    moveProduct, 
+    selectedId, 
+    selectedType,
+    undo,
+    redo,
+    canUndo,
+    canRedo
+  } = useCatalogStore();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -33,6 +45,27 @@ export default function Home() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  // Keyboard Shortcuts for Undo/Redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        if (e.shiftKey) {
+          if (canRedo()) redo();
+        } else {
+          if (canUndo()) undo();
+        }
+        e.preventDefault();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+        if (canRedo()) redo();
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo, canUndo, canRedo]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -118,7 +151,29 @@ export default function Home() {
       centerPanel={
         <div className="h-full overflow-y-auto bg-gray-200/50 p-8 relative flex flex-col items-center">
             {/* Toolbar */}
-            <div className="sticky top-4 z-20 mb-8 flex gap-4 bg-white/80 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20 print:hidden">
+            <div className="sticky top-4 z-20 mb-8 flex gap-2 bg-white/80 backdrop-blur-md p-2 rounded-full shadow-lg border border-white/20 print:hidden">
+              <div className="flex items-center gap-1 border-r border-gray-200 pr-2 mr-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full"
+                  onClick={undo}
+                  disabled={!canUndo()}
+                  title="Desfazer (Ctrl+Z)"
+                >
+                  <Undo2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full"
+                  onClick={redo}
+                  disabled={!canRedo()}
+                  title="Refazer (Ctrl+Shift+Z)"
+                >
+                  <Redo2 className="h-4 w-4" />
+                </Button>
+              </div>
               <PDFDownloadButton />
             </div>
 
